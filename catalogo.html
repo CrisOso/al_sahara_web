@@ -1,193 +1,478 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Catálogo • Al-Sahara</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head><body>
-
-<nav class="bg-light border-bottom">
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catálogo · Al-Sahara</title>
+  <meta name="description" content="Comida árabe fresca: shawarma, kebab y falafel.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body><nav class="bg-light border-bottom">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-between py-2 gap-2">
-      <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al‑Sahara</a>
+      <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al-Sahara</a>
       <ul class="nav gap-2 flex-wrap mb-0">
         <li class="nav-item"><a class="nav-link px-2" href="catalogo.html">Catálogo</a></li>
         <li class="nav-item"><a class="nav-link px-2" href="carrito.html">Carrito</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="mis-pedidos.html">Mis pedidos</a></li>
       </ul>
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span id="navUserName" class="badge text-bg-secondary d-none d-sm-inline-block">Nombre</span>
-        <a id="navUser" class="btn btn-sm btn-outline-secondary" href="login.html">Entrar</a>
-        <a id="navAdminPanel" class="btn btn-sm btn-outline-primary d-none" href="admin.html">Panel</a>
-        <a id="navLogout" class="btn btn-sm btn-outline-danger d-none" href="#">Salir</a>
+        <a class="btn btn-sm btn-outline-secondary" href="login.html">Entrar</a>
+        <a class="btn btn-sm btn-outline-primary" href="registro.html">Registrarse</a>
       </div>
     </div>
   </div>
 </nav>
 
-<section class="container my-4">
-  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-    <h5 class="mb-0">Productos</h5>
-    <div class="d-flex gap-2 flex-wrap">
-      <input type="search" class="form-control form-control-sm" placeholder="Buscar…">
-      <select class="form-select form-select-sm">
-        <option>Todos</option>
-        <option>Kebab</option>
-        <option>Shawarma</option>
-        <option>Falafel</option>
+<main class="container my-4">
+  <div class="d-flex flex-wrap justify-content-between gap-2 align-items-end mb-3">
+    <div><h1 class="h4 mb-0">Catálogo</h1><p class="small text-muted mb-0">Elige tu categoría o busca por nombre.</p></div>
+    <div class="d-flex gap-2">
+      <input id="q" type="search" class="form-control" placeholder="Buscar...">
+      <select class="form-select">
+        <option value="">Ordenar</option>
+        <option value="popular">Más populares</option>
+        <option value="precio-asc">Precio: menor a mayor</option>
+        <option value="precio-desc">Precio: mayor a menor</option>
       </select>
+      <a href="carrito.html" class="btn btn-primary">Ver carrito</a>
     </div>
   </div>
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-    <div class="col">
-  <div class="card h-100">
-    <div class="ratio ratio-4x3 bg-body-secondary"></div>
-    <div class="card-body">
-      <h6 class="card-title mb-1">Producto</h6>
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-8"></span>
-        <span class="placeholder col-5"></span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">$—</span>
-        <button class="btn btn-sm btn-outline-secondary" disabled>Añadir</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col">
-  <div class="card h-100">
-    <div class="ratio ratio-4x3 bg-body-secondary"></div>
-    <div class="card-body">
-      <h6 class="card-title mb-1">Producto</h6>
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-8"></span>
-        <span class="placeholder col-5"></span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">$—</span>
-        <button class="btn btn-sm btn-outline-secondary" disabled>Añadir</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col">
-  <div class="card h-100">
-    <div class="ratio ratio-4x3 bg-body-secondary"></div>
-    <div class="card-body">
-      <h6 class="card-title mb-1">Producto</h6>
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-8"></span>
-        <span class="placeholder col-5"></span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">$—</span>
-        <button class="btn btn-sm btn-outline-secondary" disabled>Añadir</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col">
-  <div class="card h-100">
-    <div class="ratio ratio-4x3 bg-body-secondary"></div>
-    <div class="card-body">
-      <h6 class="card-title mb-1">Producto</h6>
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-8"></span>
-        <span class="placeholder col-5"></span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">$—</span>
-        <button class="btn btn-sm btn-outline-secondary" disabled>Añadir</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col">
-  <div class="card h-100">
-    <div class="ratio ratio-4x3 bg-body-secondary"></div>
-    <div class="card-body">
-      <h6 class="card-title mb-1">Producto</h6>
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-8"></span>
-        <span class="placeholder col-5"></span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">$—</span>
-        <button class="btn btn-sm btn-outline-secondary" disabled>Añadir</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col">
-  <div class="card h-100">
-    <div class="ratio ratio-4x3 bg-body-secondary"></div>
-    <div class="card-body">
-      <h6 class="card-title mb-1">Producto</h6>
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-8"></span>
-        <span class="placeholder col-5"></span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">$—</span>
-        <button class="btn btn-sm btn-outline-secondary" disabled>Añadir</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col">
-  <div class="card h-100">
-    <div class="ratio ratio-4x3 bg-body-secondary"></div>
-    <div class="card-body">
-      <h6 class="card-title mb-1">Producto</h6>
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-8"></span>
-        <span class="placeholder col-5"></span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">$—</span>
-        <button class="btn btn-sm btn-outline-secondary" disabled>Añadir</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col">
-  <div class="card h-100">
-    <div class="ratio ratio-4x3 bg-body-secondary"></div>
-    <div class="card-body">
-      <h6 class="card-title mb-1">Producto</h6>
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-8"></span>
-        <span class="placeholder col-5"></span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">$—</span>
-        <button class="btn btn-sm btn-outline-secondary" disabled>Añadir</button>
-      </div>
-    </div>
-  </div>
-</div>
-  </div>
-</section>
 
+  <ul class="nav nav-pills gap-2 mb-3 flex-wrap">
+    <li class="nav-item"><a class="nav-link active" href="#" data-filter-cat="">Todos</a></li>
+    <li class="nav-item"><a class="nav-link" href="#" data-filter-cat="shawarma">Shawarma</a></li>
+    <li class="nav-item"><a class="nav-link" href="#" data-filter-cat="kebab">Kebab</a></li>
+    <li class="nav-item"><a class="nav-link" href="#" data-filter-cat="falafel">Falafel</a></li>
+    <li class="nav-item"><a class="nav-link" href="#" data-filter-cat="ensaladas">Ensaladas</a></li>
+    <li class="nav-item"><a class="nav-link" href="#" data-filter-cat="bebidas">Bebidas</a></li>
+    <li class="nav-item"><a class="nav-link" href="#" data-filter-cat="dulces">Dulces</a></li>
+  </ul>
 
-<div class='container'><h1>Catálogo</h1><div id='catalogoAviso' class='toast'></div><div id='gridCatalogo' class='row'></div></div>
-
-<div id="optModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="optTitle">
-  <div class="modal-backdrop" data-close="1"></div>
-  <div class="modal-card" role="document">
-    <div class="modal-head">
-      <h3 id="optTitle">Personaliza tu pedido</h3>
-      <button class="btn ghost" id="optClose" aria-label="Cerrar">✕</button>
-    </div>
-    <div id="optBody" class="modal-body small"></div>
-    <div class="modal-foot">
-      <button class="btn" id="optCancel">Cancelar</button>
-      <button class="btn primary" id="optAdd">Añadir al carrito</button>
+  <div id="skeletonGrid" class="row g-3">
+    
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
     </div>
   </div>
 </div>
 
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
 
-<footer>
-  <div class="container">
-    <a href="contacto.html" class="foot-link">Contacto</a>
-    <span>© Al-Sahara — MVP terracota.</span>
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-6 col-md-4 col-lg-3">
+  <div class="card h-100">
+    <div class="card-img-top placeholder-glow skel-img"><span class="placeholder col-12 h-100"></span></div>
+    <div class="card-body">
+      <div class="placeholder-glow mb-2"><span class="placeholder col-7 skel-line"></span></div>
+      <div class="placeholder-glow mb-2"><span class="placeholder col-10 skel-line"></span></div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="placeholder col-3 skel-line"></span>
+        <span class="btn disabled placeholder col-4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <div id="realGrid" class="row g-3 d-none">
+    
+<div class="col-6 col-md-4 col-lg-3" data-name="Shawarma Pollo" data-cat="shawarma" data-img="img/shawarma.jpg" data-desc="Jugoso, con ensalada y tahini." data-price="5.990">
+  <div class="card h-100 card-elev">
+    <img src="img/shawarma.jpg" class="card-img-top" alt="Shawarma Pollo">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Shawarma Pollo</h3>
+      <div class="small rating mb-2">★★★★★</div>
+      <p class="small text-muted flex-grow-1">Jugoso, con ensalada y tahini.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$5.990</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Shawarma Carne" data-cat="shawarma" data-img="img/shawarma.jpg" data-desc="Clásico con salsas." data-price="6.490">
+  <div class="card h-100 card-elev">
+    <img src="img/shawarma.jpg" class="card-img-top" alt="Shawarma Carne">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Shawarma Carne</h3>
+      <div class="small rating mb-2">★★★★☆</div>
+      <p class="small text-muted flex-grow-1">Clásico con salsas.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$6.490</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Kebab Mixto" data-cat="kebab" data-img="img/kebab.jpg" data-desc="Brocheta mixta + tabbule." data-price="6.990">
+  <div class="card h-100 card-elev">
+    <img src="img/kebab.jpg" class="card-img-top" alt="Kebab Mixto">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Kebab Mixto</h3>
+      <div class="small rating mb-2">★★★★☆</div>
+      <p class="small text-muted flex-grow-1">Brocheta mixta + tabbule.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$6.990</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Kebab Veggie" data-cat="kebab" data-img="img/kebab.jpg" data-desc="Alternativa vegetal." data-price="6.590">
+  <div class="card h-100 card-elev">
+    <img src="img/kebab.jpg" class="card-img-top" alt="Kebab Veggie">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Kebab Veggie</h3>
+      <div class="small rating mb-2">★★★★★</div>
+      <p class="small text-muted flex-grow-1">Alternativa vegetal.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$6.590</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Falafel Box" data-cat="falafel" data-img="img/falafel.jpg" data-desc="6 unidades + salsa." data-price="4.990">
+  <div class="card h-100 card-elev">
+    <img src="img/falafel.jpg" class="card-img-top" alt="Falafel Box">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Falafel Box</h3>
+      <div class="small rating mb-2">★★★★☆</div>
+      <p class="small text-muted flex-grow-1">6 unidades + salsa.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$4.990</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Falafel Pita" data-cat="falafel" data-img="img/falafel.jpg" data-desc="Pita con falafel." data-price="5.490">
+  <div class="card h-100 card-elev">
+    <img src="img/falafel.jpg" class="card-img-top" alt="Falafel Pita">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Falafel Pita</h3>
+      <div class="small rating mb-2">★★★★☆</div>
+      <p class="small text-muted flex-grow-1">Pita con falafel.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$5.490</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Hummus" data-cat="ensaladas" data-img="img/hummus.jpg" data-desc="Crema de garbanzo + aceite de oliva." data-price="3.490">
+  <div class="card h-100 card-elev">
+    <img src="img/hummus.jpg" class="card-img-top" alt="Hummus">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Hummus</h3>
+      <div class="small rating mb-2">★★★★★</div>
+      <p class="small text-muted flex-grow-1">Crema de garbanzo + aceite de oliva.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$3.490</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Tabbule" data-cat="ensaladas" data-img="img/tabbule.jpg" data-desc="Ensalada fresca de perejil y cuscús." data-price="3.990">
+  <div class="card h-100 card-elev">
+    <img src="img/tabbule.jpg" class="card-img-top" alt="Tabbule">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Tabbule</h3>
+      <div class="small rating mb-2">★★★★☆</div>
+      <p class="small text-muted flex-grow-1">Ensalada fresca de perejil y cuscús.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$3.990</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Limonada" data-cat="bebidas" data-img="img/limonada.jpg" data-desc="Refrescante 500 ml." data-price="1.990">
+  <div class="card h-100 card-elev">
+    <img src="img/limonada.jpg" class="card-img-top" alt="Limonada">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Limonada</h3>
+      <div class="small rating mb-2">★★★★☆</div>
+      <p class="small text-muted flex-grow-1">Refrescante 500 ml.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$1.990</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Agua Mineral" data-cat="bebidas" data-img="img/agua.jpg" data-desc="Sin gas 500 ml." data-price="1.290">
+  <div class="card h-100 card-elev">
+    <img src="img/agua.jpg" class="card-img-top" alt="Agua Mineral">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Agua Mineral</h3>
+      <div class="small rating mb-2">★★★★★</div>
+      <p class="small text-muted flex-grow-1">Sin gas 500 ml.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$1.290</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Baklava" data-cat="dulces" data-img="img/baklava.jpg" data-desc="Dulce tradicional." data-price="2.490">
+  <div class="card h-100 card-elev">
+    <img src="img/baklava.jpg" class="card-img-top" alt="Baklava">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Baklava</h3>
+      <div class="small rating mb-2">★★★★☆</div>
+      <p class="small text-muted flex-grow-1">Dulce tradicional.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$2.490</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-md-4 col-lg-3" data-name="Mix Dulces" data-cat="dulces" data-img="img/dulces_mix.jpg" data-desc="Surtido 6 unidades." data-price="3.990">
+  <div class="card h-100 card-elev">
+    <img src="img/dulces_mix.jpg" class="card-img-top" alt="Mix Dulces">
+    <div class="card-body d-flex flex-column">
+      <h3 class="h6 mb-1">Mix Dulces</h3>
+      <div class="small rating mb-2">★★★★☆</div>
+      <p class="small text-muted flex-grow-1">Surtido 6 unidades.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price">$3.990</span>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary js-add">Agregar</button>
+          <button class="btn btn-sm btn-outline-secondary js-quickview" data-bs-toggle="modal" data-bs-target="#quickView">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <div id="emptyCatalog" class="empty-wrap d-none d-flex flex-column align-items-center justify-content-center text-center">
+    <h2 class="h5 mb-2">Sin resultados</h2>
+    <p class="text-muted mb-3">No encontramos productos para tu búsqueda. Prueba con otro término o limpia filtros.</p>
+    <div class="d-inline-flex gap-2">
+      <button class="btn btn-outline-secondary" onclick="document.getElementById('q').value='';document.querySelector('[data-filter-cat]').click()">Limpiar filtros</button>
+      <a href="catalogo.html" class="btn btn-primary">Ver todo</a>
+    </div>
+  </div>
+</main>
+
+<div class="modal fade" id="quickView" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title js-qv-title">Vista rápida</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+    <div class="modal-body">
+      <img src="img/shawarma.jpg" alt="" class="img-fluid rounded mb-3 js-qv-img">
+      <p class="mb-1 fw-semibold js-qv-title">Shawarma</p>
+      <p class="small text-muted js-qv-desc">Descripción del producto.</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="price js-qv-price">$0</span>
+        <button class="btn btn-primary js-add" data-bs-dismiss="modal">Agregar al carrito</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+<footer class="border-top">
+  <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
+    <a href="contacto.html" class="text-decoration-none">Contacto</a>
+    <span class="small text-muted">© 2025 Al-Sahara</span>
   </div>
 </footer>
 
-</body></html>
+<!-- Toast container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="toastAdded" class="toast text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true" data-bs-delay="2000">
+    <div class="d-flex">
+      <div class="toast-body">Producto agregado al carrito.</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
