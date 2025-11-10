@@ -8,7 +8,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
 </head>
-<body><nav class="bg-light border-bottom">
+<body>
+<nav class="bg-light border-bottom">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-between py-2 gap-2">
       <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al-Sahara</a>
@@ -26,59 +27,171 @@
 </nav>
 
 <main class="container my-4">
-  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-    <h1 class="h4 mb-0">Carrito</h1>
-    <div class="d-flex gap-2">
-      <button id="emptyCartBtn" class="btn btn-outline-secondary">Vaciar carrito (demo)</button>
-      <a href="catalogo.html" class="btn btn-primary">Seguir comprando</a>
+  <h1 class="h4 mb-3">Texto de Carrito</h1>
+
+  <div class="row g-4">
+    <div class="col-12 col-lg-8">
+      <section class="card shadow-sm mb-3">
+        <div class="card-body">
+          <div class="row g-3 align-items-center">
+            <div class="col-12 col-md-3">
+              <div class="ratio ratio-1x1 bg-light border d-flex align-items-center justify-content-center text-muted">
+                <span>Imagen</span>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="small text-muted mb-1">Nombre</div>
+              <div class="fw-semibold">Shawarma de Pollo</div>
+              <div class="small text-muted mt-2">Valor Unitario</div>
+              <div>$5.990</div>
+              <div class="small text-muted mt-2">Cantidad</div>
+              <input type="number" class="form-control form-control-sm qty-input" value="4" min="1">
+            </div>
+            <div class="col-12 col-md-3 text-md-end">
+              <div class="small text-muted mb-1">Subtotal</div>
+              <div class="fw-semibold">$23.960</div>
+              <button class="btn btn-outline-secondary btn-sm mt-3">Quitar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card shadow-sm mb-3">
+        <div class="card-body">
+          <div class="row g-3 align-items-center">
+            <div class="col-12 col-md-3">
+              <div class="ratio ratio-1x1 bg-light border d-flex align-items-center justify-content-center text-muted">
+                <span>Imagen</span>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="small text-muted mb-1">Nombre</div>
+              <div class="fw-semibold">Falafel Box</div>
+              <div class="small text-muted mt-2">Valor Unitario</div>
+              <div>$4.990</div>
+              <div class="small text-muted mt-2">Cantidad</div>
+              <input type="number" class="form-control form-control-sm qty-input" value="4" min="1">
+            </div>
+            <div class="col-12 col-md-3 text-md-end">
+              <div class="small text-muted mb-1">Subtotal</div>
+              <div class="fw-semibold">$19.960</div>
+              <button class="btn btn-outline-secondary btn-sm mt-3">Quitar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card shadow-sm mb-3">
+        <div class="card-body">
+          <div class="row g-3 align-items-center">
+            <div class="col-12 col-md-3">
+              <div class="ratio ratio-1x1 bg-light border d-flex align-items-center justify-content-center text-muted">
+                <span>Imagen</span>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="small text-muted mb-1">Nombre</div>
+              <div class="fw-semibold">Kebab Mixto</div>
+              <div class="small text-muted mt-2">Valor Unitario</div>
+              <div>$6.490</div>
+              <div class="small text-muted mt-2">Cantidad</div>
+              <input type="number" class="form-control form-control-sm qty-input" value="4" min="1">
+            </div>
+            <div class="col-12 col-md-3 text-md-end">
+              <div class="small text-muted mb-1">Subtotal</div>
+              <div class="fw-semibold">$25.960</div>
+              <button class="btn btn-outline-secondary btn-sm mt-3">Quitar</button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-  </div>
 
-  <div id="cartTable" class="table-responsive">
-    <table class="table align-middle">
-      <thead class="table-light"><tr><th>Producto</th><th class="text-center">Cant.</th><th class="text-end">Precio</th><th class="text-end">Subtotal</th></tr></thead>
-      <tbody>
-        <tr><td>Shawarma Pollo</td><td class="text-center"><input type="number" class="form-control form-control-sm w-auto mx-auto" value="1" min="1"></td><td class="text-end">$5.990</td><td class="text-end">$5.990</td></tr>
-        <tr><td>Falafel Box</td><td class="text-center"><input type="number" class="form-control form-control-sm w-auto mx-auto" value="2" min="1"></td><td class="text-end">$4.990</td><td class="text-end">$9.980</td></tr>
-      </tbody>
-    </table>
-  </div>
+    <aside class="col-12 col-lg-4">
+      <div class="position-lg-sticky top-20">
+        <div class="card shadow-sm mb-3">
+          <div class="card-header py-2"><strong>Totales</strong></div>
+          <div class="card-body">
+            <div class="d-flex justify-content-between"><span>Subtotal</span><span>$69.880</span></div>
+            <div class="d-flex justify-content-between"><span>Descuento</span><span>$0</span></div>
+            <div class="d-flex justify-content-between"><span>Envío</span><span>$2.000</span></div>
+            <div class="d-flex justify-content-between"><span>Propina</span><span>$0</span></div>
+            <hr>
+            <div class="d-flex justify-content-between fw-semibold"><span>Total</span><span>$71.880</span></div>
+          </div>
+        </div>
 
-  <div id="cartSummary" class="row g-4">
-    <div class="col-12 col-lg-4 ms-auto">
-      <div class="card"><div class="card-body">
-        <h2 class="h6">Resumen</h2>
-        <div class="d-flex justify-content-between"><span>Subtotal</span><span>$15.970</span></div>
-        <div class="d-flex justify-content-between"><span>Despacho</span><span>$2.000</span></div>
-        <hr>
-        <div class="d-flex justify-content-between fw-semibold"><span>Total</span><span>$17.970</span></div>
-        <a href="pago.html" class="btn btn-primary w-100 mt-3">Proceder al pago</a>
-      </div></div>
-    </div>
-  </div>
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <div class="fw-semibold mb-2">Retiro / Delivery</div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="entrega" id="optRetiro" checked>
+              <label class="form-check-label" for="optRetiro">Retiro</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="entrega" id="optDelivery">
+              <label class="form-check-label" for="optDelivery">Delivery</label>
+            </div>
+          </div>
+        </div>
 
-  <div id="emptyCart" class="empty-wrap d-none d-flex flex-column align-items-center justify-content-center text-center">
-    <h2 class="h5 mb-2">Tu carrito está vacío</h2>
-    <p class="text-muted mb-3">Cuando agregues productos aparecerán aquí.</p>
-    <a href="catalogo.html" class="btn btn-primary">Ir al catálogo</a>
+        <div id="addressCard" class="card shadow-sm mb-3 d-none">
+          <div class="card-body">
+            <div class="fw-semibold mb-2">Dirección</div>
+            <input id="addressInput" type="text" class="form-control" placeholder="Entrada de dirección" disabled>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <div class="fw-semibold mb-2">Método de pago</div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="pago" id="optTarjeta" checked>
+              <label class="form-check-label" for="optTarjeta">Tarjeta</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="pago" id="optCaja">
+              <label class="form-check-label" for="optCaja">Caja/Entrega</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <div class="fw-semibold mb-2">Cupón</div>
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Entrada de Cupón">
+              <button class="btn btn-outline-primary">Aplicar cupón</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <div class="fw-semibold mb-2">Propina</div>
+            <div class="input-group w-50">
+              <label class="input-group-text" for="propinaSelect">%</label>
+              <select id="propinaSelect" class="form-select form-select-sm">
+                <option value="10" selected>10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <a href="caja_virtual.html" class="btn btn-primary w-100">Confirmar pedido</a>
+      </div>
+    </aside>
   </div>
 </main>
+
 <footer class="border-top">
   <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
     <a href="contacto.html" class="text-decoration-none">Contacto</a>
     <span class="small text-muted">© 2025 Al-Sahara</span>
   </div>
 </footer>
-
-<!-- Toast container -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="toastAdded" class="toast text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true" data-bs-delay="2000">
-    <div class="d-flex">
-      <div class="toast-body">Producto agregado al carrito.</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
-    </div>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="app.js"></script>

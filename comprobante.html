@@ -3,52 +3,105 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Adjuntar Comprobante · Al-Sahara</title>
+  <title>Comprobante · Al-Sahara</title>
   <meta name="description" content="Comida árabe fresca: shawarma, kebab y falafel.">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
 </head>
-<body><nav class="bg-light border-bottom">
+<body>
+
+<nav class="bg-light border-bottom">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-between py-2 gap-2">
       <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al-Sahara</a>
       <ul class="nav gap-2 flex-wrap mb-0">
-        <li class="nav-item"><a class="nav-link px-2" href="catalogo.html">Catálogo</a></li>
-        <li class="nav-item"><a class="nav-link px-2" href="carrito.html">Carrito</a></li>
-        <li class="nav-item"><a class="nav-link px-2" href="mis-pedidos.html">Mis pedidos</a></li>
+        <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="catalogo.html">Catálogo</a></li>
+        <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="carrito.html">Carrito</a></li>
       </ul>
       <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="btn btn-sm btn-outline-secondary disabled">Nombre</span>
         <a class="btn btn-sm btn-outline-secondary" href="login.html">Entrar</a>
-        <a class="btn btn-sm btn-outline-primary" href="registro.html">Registrarse</a>
       </div>
     </div>
   </div>
 </nav>
-
 <main class="container my-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h1 class="h4 mb-3">Adjuntar comprobante</h1>
-          <form class="vstack gap-3">
-            <div><label class="form-label">Número de pedido</label><input type="text" class="form-control" placeholder="Ej: 1024"></div>
-            <div><label class="form-label">Archivo (PDF/JPG/PNG)</label><input type="file" class="form-control"></div>
-            <div><label class="form-label">Comentario (opcional)</label><textarea class="form-control" rows="3"></textarea></div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="toast" data-bs-target="#toastComp">Enviar</button>
-          </form>
+  <div class="mb-3">
+    <span class="badge badge-tag px-3 py-2">Comprobante</span>
+  </div>
+  <p class="mb-3">Orden ORD123456789</p>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <div><strong>Fecha:</strong> 12/12/2012</div>
+          <div><strong>Cliente:</strong> Nombre</div>
+          <div><strong>R.U.T.:</strong> (Solo si es factura)</div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div><strong>Método de Envío:</strong> Despacho</div>
+          <div><strong>Dirección de despacho:</strong> —</div>
+          <div><strong>Teléfono:</strong> +56987459856</div>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="table-responsive table-rounded mb-3">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th class="text-center">Cantidad</th>
+          <th class="text-end">Precio</th>
+          <th class="text-end">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Producto 1</td>
+          <td class="text-center">1</td>
+          <td class="text-end">$1.234</td>
+          <td class="text-end">$1.234</td>
+        </tr>
+        <tr>
+          <td>Producto 2</td>
+          <td class="text-center">2</td>
+          <td class="text-end">$1.234</td>
+          <td class="text-end">$2.468</td>
+        </tr>
+        <tr>
+          <td>Producto 3</td>
+          <td class="text-center">1</td>
+          <td class="text-end">$1.234</td>
+          <td class="text-end">$1.234</td>
+        </tr>
+        <tr>
+          <td>Producto 4</td>
+          <td class="text-center">2</td>
+          <td class="text-end">$1.234</td>
+          <td class="text-end">$2.468</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="summary-note d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="fw-bold">Total: $7.404</div>
+    <div class="d-flex gap-4">
+      <div><strong>Neto:</strong> $5.882</div>
+      <div><strong>IVA:</strong> $1.118</div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4 summary-note">
+    <div class="col-12 col-md"><strong>Medio de pago:</strong> Tarjeta Débito</div>
+    <div class="col-12 col-md"><strong>Monto Cancelado:</strong> $7.404</div>
+    <div class="col-12 col-md"><strong>Nº de Transacción:</strong> 1573215796548</div>
+  </div>
 </main>
 
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="toastComp" class="toast text-bg-success border-0" data-bs-delay="2000">
-    <div class="d-flex"><div class="toast-body">Comprobante enviado correctamente.</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>
-  </div>
-</div>
 <footer class="border-top">
   <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
     <a href="contacto.html" class="text-decoration-none">Contacto</a>
@@ -56,17 +109,6 @@
   </div>
 </footer>
 
-<!-- Toast container -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="toastAdded" class="toast text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true" data-bs-delay="2000">
-    <div class="d-flex">
-      <div class="toast-body">Producto agregado al carrito.</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
-    </div>
-  </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="app.js"></script>
 </body>
 </html>

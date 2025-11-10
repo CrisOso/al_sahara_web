@@ -1,20 +1,17 @@
-// Interacciones: toasts, skeletons, filtros, estados vacíos, quick view
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Toast global (Agregar)
   const toastEl = document.getElementById('toastAdded');
   const productToast = toastEl ? new bootstrap.Toast(toastEl) : null;
   document.querySelectorAll('.js-add').forEach(btn => {
     btn.addEventListener('click', () => productToast?.show());
   });
 
-  // Skeletons Home
   const skHome = document.getElementById('skeletonHome');
   const realHome = document.getElementById('realHome');
   if (skHome && realHome) {
     setTimeout(() => { skHome.classList.add('d-none'); realHome.classList.remove('d-none'); }, 600);
   }
 
-  // Catalog: skeletons + filtros + estado vacío + quick view
   const skGrid = document.getElementById('skeletonGrid');
   const realGrid = document.getElementById('realGrid');
   const emptyCatalog = document.getElementById('emptyCatalog');
@@ -57,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Quick view modal fill
   const qv = document.getElementById('quickView');
   const qvTitle = qv?.querySelector('.js-qv-title');
   const qvDesc = qv?.querySelector('.js-qv-desc');
@@ -74,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Estados vacíos (demo)
   document.getElementById('emptyCartBtn')?.addEventListener('click', ()=>{
     document.getElementById('cartTable')?.classList.add('d-none');
     document.getElementById('cartSummary')?.classList.add('d-none');
@@ -84,4 +79,25 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ordersList')?.classList.add('d-none');
     document.getElementById('emptyOrders')?.classList.remove('d-none');
   });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const retiro = document.getElementById('optRetiro');
+  const delivery = document.getElementById('optDelivery');
+  const addressCard = document.getElementById('addressCard');
+  const addressInput = document.getElementById('addressInput');
+
+  if (!retiro || !delivery || !addressCard || !addressInput) return;
+
+  function toggleAddress() {
+    const show = delivery.checked;
+    addressCard.classList.toggle('d-none', !show);
+    addressInput.disabled = !show;
+    addressInput.setAttribute('aria-hidden', String(!show));
+    if (!show) addressInput.value = '';
+  }
+
+  retiro.addEventListener('change', toggleAddress);
+  delivery.addEventListener('change', toggleAddress);
+  toggleAddress();
 });
