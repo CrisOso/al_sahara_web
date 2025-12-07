@@ -1,0 +1,482 @@
+
+openapi: 3.1.0
+info:
+  title: Al‑Sahara API
+  version: 0.1.0
+  description: >
+    API contract para el e‑commerce "Al‑Sahara".
+    Incluye autenticación (JWT), catálogo (productos/categorías), carrito,
+    pedidos, pagos (mock y reintentos) y carga de imágenes.
+servers:
+  - url: http://localhost:4000
+tags:
+  - name: health
+  - name: auth
+  - name: categories
+  - name: products
+  - name: cart
+  - name: orders
+  - name: payments
+  - name: uploads
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Category:
+      type: object
+      properties:
+        id: { type: string, example: "cat_falafel" }
+        name: { type: string, example: "Falafel" }
+        slug: { type: string, example: "falafel" }
+        order: { type: integer, example: 1 }
+      required: [id, name, slug]
+    Product:
+      type: object
+      properties:
+        id: { type: string, example: "pita_falafel_001" }
+        name: { type: string, example: "Pita Falafel" }
+        description: { type: string }
+        price: { type: number, format: float, example: 5990 }
+        currency: { type: string, example: "CLP" }
+        image: { type: string, example: "/images/pita-falafel.jpg" }
+        categoryId: { type: string, example: "cat_helados" }
+        active: { type: boolean, example: true }
+      required: [id, name, price, currency, categoryId, active]
+    CartItem:
+      type: object
+      properties:
+        productId: { type: string }
+        quantity: { type: integer, minimum: 1, default: 1 }
+        unitPrice: { type: number, format: float }
+      required: [productId, quantity]
+    Cart:
+      type: object
+      properties:
+        id: { type: string, example: "cart_abc123" }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/CartItem" }
+        subtotal: { type: number, format: float }
+        deliveryFee: { type: number, format: float, example: 1990 }
+        total: { type: number, format: float }
+      required: [id, items, total]
+    Address:
+      type: object
+      properties:
+        street: { type: string }
+        city: { type: string }
+        region: { type: string }
+        notes: { type: string }
+    Order:
+      type: object
+      properties:
+        id: { type: string, example: "ord_20251018_0001" }
+        cartId: { type: string }
+        status: { type: string, enum: [pending, paid, failed, cancelled, refunded, delivering, completed] }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/CartItem" }
+        customerEmail: { type: string, format: email }
+        customerName: { type: string }
+        address: { $ref: "#/components/schemas/Address" }
+        total: { type: number, format: float }
+        createdAt: { type: string, format: date-time }
+      required: [id, status, items, total, createdAt]
+    PaymentIntent:
+      type: object
+      properties:
+        id: { type: string, example: "pi_ABC123" }
+        orderId: { type: string }
+        status: { type: string, enum: [requires_payment_method, processing, succeeded, failed] }
+        amount: { type: number, format: float }
+        currency: { type: string, example: "CLP" }
+        lastError: { type: string, nullable: true }
+        attempts: { type: integer, example: 1 }
+      required: [id, orderId, status, amount, currency, attempts]
+    LoginRequest:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 6 }
+      required: [email, password]
+    LoginResponse:
+      type: object
+      properties:
+        token: { type: string }
+        user:
+          type: object
+          properties:
+            id: { type: string }
+            email: { type: string, format: email }
+            role: { type: string, enum: [customer, admin] }
+          required: [id, email, role]
+      required: [token, user]
+
+paths:
+  /health:
+    get:
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: "ok" }
+
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: Login con email/password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LoginRequest" }
+      responses:
+        "200":
+          description: Autenticado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LoginResponse" }
+
+  /categories:
+    get:
+      tags: [categories]
+      summary: Listar categorías
+      responses:
+        "200":
+          description: Lista de categorías
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Category" }
+    post:
+      tags: [categories]
+      security: [{ bearerAuth: [] }]
+      summary: Crear categoría (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Category" }
+      responses:
+        "201":
+          description: Creada
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Category" }
+
+  /categories/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string }
+    patch:
+      tags: [categories]
+      security: [{ bearerAuth: [] }]
+      summary: Actualizar categoría (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Category" }
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags: [categories]
+      security: [{ bearerAuth: [] }]
+      summary: Eliminar categoría (admin)
+      responses:
+        "204":
+          description: Sin contenido
+
+  /products:
+    get:
+      tags: [products]
+      summary: Listar productos
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+        - name: categoryId
+          in: query
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20, minimum: 1, maximum: 100 }
+        - name: offset
+          in: query
+          schema: { type: integer, default: 0, minimum: 0 }
+      responses:
+        "200":
+          description: Lista de productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Product" }
+    post:
+      tags: [products]
+      security: [{ bearerAuth: [] }]
+      summary: Crear producto (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Product" }
+      responses:
+        "201":
+          description: Creado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Product" }
+
+  /products/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [products]
+      summary: Obtener un producto
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Product" }
+    patch:
+      tags: [products]
+      security: [{ bearerAuth: [] }]
+      summary: Actualizar producto (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Product" }
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags: [products]
+      security: [{ bearerAuth: [] }]
+      summary: Eliminar producto (admin)
+      responses:
+        "204":
+          description: Sin contenido
+
+  /cart:
+    get:
+      tags: [cart]
+      summary: Obtener carrito actual (por cookie o header)
+      responses:
+        "200":
+          description: Carrito
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cart" }
+    post:
+      tags: [cart]
+      summary: Reemplazar/crear carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Cart" }
+      responses:
+        "200":
+          description: Actualizado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cart" }
+
+  /cart/items:
+    post:
+      tags: [cart]
+      summary: Agregar ítem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CartItem" }
+      responses:
+        "200":
+          description: Carrito
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cart" }
+
+  /cart/items/{productId}:
+    parameters:
+      - in: path
+        name: productId
+        required: true
+        schema: { type: string }
+    patch:
+      tags: [cart]
+      summary: Cambiar cantidad
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity: { type: integer, minimum: 0 }
+      responses:
+        "200":
+          description: Carrito
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cart" }
+    delete:
+      tags: [cart]
+      summary: Eliminar ítem
+      responses:
+        "200":
+          description: Carrito
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cart" }
+
+  /orders:
+    post:
+      tags: [orders]
+      summary: Crear pedido desde carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cartId: { type: string }
+                customerEmail: { type: string, format: email }
+                customerName: { type: string }
+                address: { $ref: "#/components/schemas/Address" }
+              required: [cartId, customerEmail]
+      responses:
+        "201":
+          description: Pedido creado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Order" }
+    get:
+      tags: [orders]
+      security: [{ bearerAuth: [] }]
+      summary: Listar pedidos (admin)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Order" }
+
+  /orders/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [orders]
+      summary: Obtener un pedido
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Order" }
+    patch:
+      tags: [orders]
+      security: [{ bearerAuth: [] }]
+      summary: Actualizar estado del pedido (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, paid, failed, cancelled, refunded, delivering, completed]
+      responses:
+        "200":
+          description: OK
+
+  /payments/intents:
+    post:
+      tags: [payments]
+      summary: Crear intento de pago
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId: { type: string }
+                method: { type: string, enum: [card, transfer, cash_on_delivery] }
+              required: [orderId, method]
+      responses:
+        "201":
+          description: Intento creado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentIntent" }
+
+  /payments/intents/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string }
+    post:
+      tags: [payments]
+      summary: Reintentar pago (simula rechazos/aceptación)
+      responses:
+        "200":
+          description: Estado actualizado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentIntent" }
+
+  /uploads/images:
+    post:
+      tags: [uploads]
+      security: [{ bearerAuth: [] }]
+      summary: Subir imagen de producto (multipart/form-data)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Subida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url: { type: string, example: "/images/pita-falafel.jpg" }
