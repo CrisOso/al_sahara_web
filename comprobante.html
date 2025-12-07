@@ -8,41 +8,60 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
 </head>
-<body>
+<body class="min-vh-100 d-flex flex-column">
 
 <nav class="bg-light border-bottom">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-between py-2 gap-2">
       <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al-Sahara</a>
       <ul class="nav gap-2 flex-wrap mb-0">
-        <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="catalogo.html">Catálogo</a></li>
-        <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="carrito.html">Carrito</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="catalogo.html">Catálogo</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="carrito.html">Carrito</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="mis-pedidos.html">Mis pedidos</a></li>
       </ul>
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span class="btn btn-sm btn-outline-secondary disabled">Nombre</span>
-        <a class="btn btn-sm btn-outline-secondary" href="login.html">Entrar</a>
+        <div class="d-flex align-items-center gap-2 flex-wrap" id="navAuthArea"></div>
       </div>
     </div>
   </div>
 </nav>
+
 <main class="container my-4">
-  <div class="mb-3">
-    <span class="badge badge-tag px-3 py-2">Comprobante</span>
+  <div class="mb-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div>
+      <span class="badge badge-tag px-3 py-2">Comprobante</span>
+      <p class="mb-0 mt-2 small text-muted" id="receiptOrderId">Orden —</p>
+    </div>
+    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="window.print()">
+      Imprimir / guardar PDF
+    </button>
   </div>
-  <p class="mb-3">Orden ORD123456789</p>
+
+  <div id="receiptAlert" class="alert alert-danger d-none" role="alert"></div>
 
   <div class="card shadow-sm mb-3">
     <div class="card-body">
       <div class="row g-3">
         <div class="col-12 col-md-6">
-          <div><strong>Fecha:</strong> 12/12/2012</div>
-          <div><strong>Cliente:</strong> Nombre</div>
-          <div><strong>R.U.T.:</strong> (Solo si es factura)</div>
+          <h2 class="h6">Datos del comprobante</h2>
+          <div class="small">
+            <div><strong>Fecha:</strong> <span id="receiptDate">—</span></div>
+            <div><strong>Orden:</strong> <span id="receiptOrderCode">—</span></div>
+            <div><strong>Estado del pedido:</strong>
+              <span id="receiptOrderStatus" class="badge text-bg-secondary">—</span>
+            </div>
+            <div><p><strong>Nota:</strong> <span id="orderNoteText">Sin información</span></p></div>
+          </div>
         </div>
         <div class="col-12 col-md-6">
-          <div><strong>Método de Envío:</strong> Despacho</div>
-          <div><strong>Dirección de despacho:</strong> —</div>
-          <div><strong>Teléfono:</strong> +56987459856</div>
+          <h2 class="h6">Datos del cliente</h2>
+          <div class="small">
+            <div><strong>Cliente:</strong> <span id="receiptCustomerName">—</span></div>
+            <div><strong>Correo:</strong> <span id="receiptCustomerEmail">—</span></div>
+            <div><strong>Teléfono:</strong> <span id="receiptCustomerPhone">—</span></div>
+            <div><strong>Entrega:</strong> <span id="receiptDeliveryMethod">—</span></div>
+            <div><strong>Dirección:</strong> <span id="receiptDeliveryAddress">—</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -50,59 +69,87 @@
 
   <div class="table-responsive table-rounded mb-3">
     <table class="table mb-0">
-      <thead>
+      <thead class="table-light">
         <tr>
           <th>Producto</th>
           <th class="text-center">Cantidad</th>
-          <th class="text-end">Precio</th>
+          <th class="text-end">Unitario</th>
           <th class="text-end">Total</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="receiptItemsBody">
         <tr>
-          <td>Producto 1</td>
-          <td class="text-center">1</td>
-          <td class="text-end">$1.234</td>
-          <td class="text-end">$1.234</td>
-        </tr>
-        <tr>
-          <td>Producto 2</td>
-          <td class="text-center">2</td>
-          <td class="text-end">$1.234</td>
-          <td class="text-end">$2.468</td>
-        </tr>
-        <tr>
-          <td>Producto 3</td>
-          <td class="text-center">1</td>
-          <td class="text-end">$1.234</td>
-          <td class="text-end">$1.234</td>
-        </tr>
-        <tr>
-          <td>Producto 4</td>
-          <td class="text-center">2</td>
-          <td class="text-end">$1.234</td>
-          <td class="text-end">$2.468</td>
+          <td colspan="4" class="text-center text-muted py-3">
+            Cargando productos del pedido…
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
+  
+<div class="row mt-3">
+  <!-- PANEL ADMIN 2/3 -->
+  <div class="col-12 col-lg-8">
+    <section id="adminPanel" class="card shadow-sm d-none">
+      <div class="card-body">
+        <h2 class="h6 mb-3">Panel administrador</h2>
 
-  <div class="summary-note d-flex flex-wrap justify-content-between align-items-center mb-4">
-    <div class="fw-bold">Total: $7.404</div>
-    <div class="d-flex gap-4">
-      <div><strong>Neto:</strong> $5.882</div>
-      <div><strong>IVA:</strong> $1.118</div>
+        <dl class="row small mb-2">
+          <dt class="col-4 col-sm-3">ID pedido</dt>
+          <dd class="col-8 col-sm-9" id="adminOrderId"></dd>
+
+          <dt class="col-4 col-sm-3">ID pago</dt>
+          <dd class="col-8 col-sm-9" id="adminPaymentId"></dd>
+
+          <dt class="col-4 col-sm-3">Estado pago</dt>
+          <dd class="col-8 col-sm-9" id="adminPaymentStatus"></dd>
+        </dl>
+
+        <hr>
+
+        <h3 class="h6">Historial del pedido</h3>
+        <ul id="adminHistory" class="small mb-0"></ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- SUMARIO 1/3 -->
+  <div class="col-12 col-lg-4 mt-3 mt-lg-0">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6">Resumen</h2>
+        <dl class="row mb-0">
+          <dt class="col-6">Subtotal</dt>
+          <dd class="col-6 text-end" id="receiptSubtotal">$0</dd>
+
+          <dt class="col-6">Envío</dt>
+          <dd class="col-6 text-end" id="receiptDeliveryFee">$0</dd>
+
+          <dt class="col-6">Propina</dt>
+          <dd class="col-6 text-end" id="receiptTip">$0</dd>
+
+          <dt class="col-6"><strong>Total</strong></dt>
+          <dd class="col-6 text-end"><strong id="receiptTotal">$0</strong></dd>
+        </dl>
+
+        <p class="small text-muted mt-3 mb-0" id="receiptPaymentInfo">
+          Estado del pago: —
+        </p>
+
+        <div class="d-grid mt-3">
+          <button id="btnIrAPagar" class="btn btn-primary d-none">
+            Pagar con tarjeta
+          </button>
+        </div>
+
+      </div>
     </div>
   </div>
+</div>
 
-  <div class="row g-3 mb-4 summary-note">
-    <div class="col-12 col-md"><strong>Medio de pago:</strong> Tarjeta Débito</div>
-    <div class="col-12 col-md"><strong>Monto Cancelado:</strong> $7.404</div>
-    <div class="col-12 col-md"><strong>Nº de Transacción:</strong> 1573215796548</div>
-  </div>
 </main>
 
-<footer class="border-top">
+<footer class="border-top mt-auto">
   <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
     <a href="contacto.html" class="text-decoration-none">Contacto</a>
     <span class="small text-muted">© 2025 Al-Sahara</span>
@@ -110,5 +157,392 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="api-client.js"></script>
+<script src="nav-auth.js"></script>
+<script src="order-utils.js"></script>
+
+<script>
+  (function () {
+    const api = window.AlSaharaAPI || {};
+    const ui  = window.AlSaharaUI || {};
+
+    const { alSaharaFetch, clearAuthSession } = api;
+    const {
+      formatCLP,
+      mapOrderStatus,
+      mapDeliveryMethod,
+      mapPaymentMethod,
+      getOrderTotal,
+    } = ui;
+
+    let order = null; 
+
+    const alertEl      = document.getElementById('receiptAlert');
+    const orderIdEl    = document.getElementById('receiptOrderId');
+    const orderCodeEl  = document.getElementById('receiptOrderCode');
+    const dateEl       = document.getElementById('receiptDate');
+    const statusEl     = document.getElementById('receiptOrderStatus');
+
+    const customerNameEl    = document.getElementById('receiptCustomerName');
+    const customerEmailEl   = document.getElementById('receiptCustomerEmail');
+    const customerPhoneEl   = document.getElementById('receiptCustomerPhone');
+    const deliveryMethodEl  = document.getElementById('receiptDeliveryMethod');
+    const deliveryAddressEl = document.getElementById('receiptDeliveryAddress');
+
+    const itemsBodyEl  = document.getElementById('receiptItemsBody');
+    const subtotalEl   = document.getElementById('receiptSubtotal');
+    const deliveryEl   = document.getElementById('receiptDeliveryFee');
+    const tipEl        = document.getElementById('receiptTip');
+    const totalEl      = document.getElementById('receiptTotal');
+    const paymentInfoEl= document.getElementById('receiptPaymentInfo');
+    const btnIrAPagar  = document.getElementById('btnIrAPagar');
+
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    function showError(msg) {
+      if (!alertEl) return;
+      alertEl.textContent = msg;
+      alertEl.classList.remove('d-none');
+    }
+
+    function hideError() {
+      if (!alertEl) return;
+      alertEl.classList.add('d-none');
+      alertEl.textContent = '';
+    }
+
+        function updatePayButton() {
+      if (!btnIrAPagar) return;
+      if (!order) {
+        btnIrAPagar.classList.add('d-none');
+        return;
+      }
+
+      const rawStatus = (order.status || '').toString().toLowerCase();
+      const payMethod = (order.paymentMethod || order.paymentInfo?.method || '')
+        .toString()
+        .toLowerCase();
+
+      // consideramos "pagado" solo estos estados
+      const isPaidLike = ['paid', 'completed'].includes(rawStatus);
+      const supportsCard = ['card', 'transbank', 'webpay', 'webpayplus', 'webpay plus']
+        .includes(payMethod);
+
+      // Mostrar botón siempre que NO esté pagado/completado y el método sea con tarjeta
+      if (!isPaidLike && supportsCard) {
+        btnIrAPagar.classList.remove('d-none');
+      } else {
+        btnIrAPagar.classList.add('d-none');
+      }
+    }
+
+
+    function renderOrder(o) {
+      if (!o) return;
+      
+      // Normalizar estado antes de mapear 
+      let rawStatus = (o.status || '').toString();
+      let statusKey = rawStatus.toLowerCase();
+
+      if (statusKey === 'pendiente') statusKey = 'pending';
+      if (statusKey === 'pagado' || statusKey === 'pagada') statusKey = 'paid';
+      if (statusKey === 'rechazado' || statusKey === 'rechazada') statusKey = 'rejected';
+
+      // Guardamos el valor normalizado en la orden que tenemos en memoria
+      o.status = statusKey;
+
+      const id = o.id || o._id || '—';
+      if (orderIdEl)   orderIdEl.textContent   = `Orden ${id}`;
+      if (orderCodeEl) orderCodeEl.textContent = id;
+
+      // Fecha
+      const created = o.createdAt ? new Date(o.createdAt) : null;
+      if (dateEl) {
+        dateEl.textContent = created
+          ? created.toLocaleString('es-CL', { dateStyle: 'short', timeStyle: 'short' })
+          : '—';
+      }
+
+      // Estado (usando estado normalizado)
+      const st = mapOrderStatus(statusKey);
+      if (statusEl) {
+        statusEl.textContent = st.label;
+        statusEl.className = 'badge ' + st.cls;
+      }
+
+      // Cliente
+      if (customerNameEl)    customerNameEl.textContent    = o.customerName  || '—';
+      if (customerEmailEl)   customerEmailEl.textContent   = o.customerEmail || '—';
+      if (customerPhoneEl)   customerPhoneEl.textContent   = o.customerPhone || '—';
+      if (deliveryMethodEl)  deliveryMethodEl.textContent  = mapDeliveryMethod(o.deliveryMethod);
+      if (deliveryAddressEl) deliveryAddressEl.textContent = o.address || '—';
+
+      // Totales
+      const backendTotal = Number(getOrderTotal(o)) || 0;
+      const deliveryFee  = Number(o.deliveryFee) || 0;
+
+      // calcular subtotal desde items
+      let subtotalCalc = 0;
+      (o.items || []).forEach((it) => {
+        const price = it.price ?? it.unitPrice ?? 0;
+        const qty   = it.quantity || 0;
+        subtotalCalc += price * qty;
+      });
+
+      // Tomamos la propina desde la orden; si no viene, la inferimos
+      let tipValue = Number(o.tip);
+      if (!Number.isFinite(tipValue) || tipValue < 0) {
+        tipValue = Math.max(backendTotal - subtotalCalc - deliveryFee, 0);
+      }
+
+      // Ahora el total que mostramos SIEMPRE cuadra:
+      const totalDisplay = subtotalCalc + deliveryFee + tipValue;
+
+      if (subtotalEl) subtotalEl.textContent = formatCLP(subtotalCalc);
+      if (deliveryEl) deliveryEl.textContent = formatCLP(deliveryFee);
+      if (tipEl)      tipEl.textContent      = formatCLP(tipValue);
+      if (totalEl)    totalEl.textContent    = formatCLP(totalDisplay);
+
+      const NoteEl       = document.getElementById('orderNoteText');
+      if (NoteEl) {
+        NoteEl.textContent =
+          order.note && order.note.trim()
+            ? order.note
+            : '—';
+      }
+
+      // Info pago
+      const payMethod = mapPaymentMethod(
+        o.paymentMethod || o.paymentInfo?.method
+      );
+      const statusPay = st.label;
+      if (paymentInfoEl) {
+        paymentInfoEl.textContent =
+          `Método de pago: ${payMethod}. Estado del pago: ${statusPay}.`;
+      }
+
+      // Items
+      if (itemsBodyEl) {
+        const items = o.items || [];
+        if (!items.length) {
+          itemsBodyEl.innerHTML = `
+            <tr>
+              <td colspan="4" class="text-center text-muted py-3">
+                Este pedido no tiene productos.
+              </td>
+            </tr>`;
+        } else {
+          itemsBodyEl.innerHTML = items.map((it) => {
+            const name  = it.name || it.productName || it.productId || '(Producto)';
+            const qty   = it.quantity || 0;
+            const price = it.unitPrice || it.price || 0;
+            const sub   = price * qty;
+            return `
+              <tr>
+                <td>${name}</td>
+                <td class="text-center">${qty}</td>
+                <td class="text-end">${formatCLP(price)}</td>
+                <td class="text-end">${formatCLP(sub)}</td>
+              </tr>`;
+          }).join('');
+        }
+      }
+
+      // Actualizar botón de pago en base al estado NORMALIZADO
+      order = o; // aseguramos que la variable global tenga la versión normalizada
+      updatePayButton();
+      hydrateAdminPanel(order);
+    }
+
+    // Confirma Webpay si viene token_ws y devuelve la ORDEN si el backend la envía
+    async function confirmWebpayIfNeeded() {
+      const tokenWs = getQueryParam('token_ws');
+      if (!tokenWs) return null;
+
+      // Intentamos también mandar un fallbackOrderId
+      const orderIdFromQuery =
+        getQueryParam('order') || getQueryParam('id') || null;
+      const storedLastOrderId =
+        localStorage.getItem('lastPaidOrderId') ||
+        localStorage.getItem('lastOrderId') ||
+        null;
+
+      const fallbackOrderId = orderIdFromQuery || storedLastOrderId || null;
+
+      try {
+        const resp = await alSaharaFetch('/webpay/confirm', {
+          method: 'POST',
+          body: {
+            token_ws: tokenWs,
+            token: tokenWs,
+            fallbackOrderId,
+          },
+        });
+
+        // Si el backend devuelve una orden, la usamos
+        const confirmedOrder =
+          resp.order ||
+          resp.orderUpdated ||
+          resp.data?.order ||
+          (resp._id || resp.id ? resp : null);
+
+        if (confirmedOrder && typeof confirmedOrder === 'object') {
+          const id = confirmedOrder._id || confirmedOrder.id || null;
+          if (id) {
+            localStorage.setItem('lastPaidOrderId', id);
+          }
+          return confirmedOrder;
+        }
+
+        // Si no hubo orden pero vino un orderId, al menos lo guardamos
+        const orderId =
+          resp.orderId ||
+          resp.order?._id ||
+          resp.buyOrder ||
+          resp.buy_order ||
+          null;
+
+        if (orderId) {
+          localStorage.setItem('lastPaidOrderId', orderId);
+        }
+
+        return null;
+      } catch (err) {
+        console.error('[comprobante] error confirmando pago en Webpay', err);
+        return null;
+      }
+    }
+
+
+    async function loadReceipt() {
+      hideError();
+
+      let orderFromConfirm = null;
+      let orderId =
+        getQueryParam('order') ||
+        getQueryParam('id') ||
+        null;
+
+      // Si no viene ?order= ni ?id=, probar confirmando Webpay
+      if (!orderId) {
+        orderFromConfirm = await confirmWebpayIfNeeded();
+        if (orderFromConfirm) {
+          order = orderFromConfirm;
+          const idFromOrder = order._id || order.id;
+          if (idFromOrder) {
+            orderId = idFromOrder;
+          }
+        }
+      }
+
+      // Si sigue sin orderId, usar la última orden guardada en LS
+      if (!orderId) {
+        const stored = localStorage.getItem('lastPaidOrderId');
+        if (stored) {
+          orderId = stored;
+        }
+      }
+
+      // Si aun así no hay, mostramos error
+      if (!orderId && !orderFromConfirm) {
+        showError('No se pudo determinar la orden asociada al comprobante.');
+        if (itemsBodyEl) {
+          itemsBodyEl.innerHTML = `
+            <tr>
+              <td colspan="4" class="text-center text-muted py-3">
+                No se pudo cargar el comprobante (no hay ID de orden).
+              </td>
+            </tr>`;
+        }
+        return;
+      }
+
+      // Mostrar el ID en el título si ya lo conocemos
+      if (orderId && orderIdEl) {
+        orderIdEl.textContent = 'Orden ' + orderId;
+      }
+
+      try {
+        // Si ya tenemos la orden desde la confirmación, la usamos directamente
+        if (orderFromConfirm) {
+          renderOrder(orderFromConfirm);
+          return;
+        }
+
+        // Si solo tenemos el ID, pedimos la orden al backend
+        order = await alSaharaFetch('/orders/' + encodeURIComponent(orderId), {
+          method: 'GET',
+        });
+        renderOrder(order);
+      } catch (err) {
+        console.error('Error cargando comprobante', err);
+        if (err.status === 401 || err.status === 403) {
+          clearAuthSession?.();
+          window.location.href = 'login.html';
+        } else {
+          showError(err.message || 'No se pudo cargar el comprobante.');
+          if (itemsBodyEl) {
+            itemsBodyEl.innerHTML = `
+              <tr>
+                <td colspan="4" class="text-center text-muted py-3">
+                  Error al cargar el detalle del pedido.
+                </td>
+              </tr>`;
+          }
+        }
+      }
+    }
+    const user = api.getStoredUser?.() || null;
+
+    function hydrateAdminPanel(order) {
+      const role = String(user?.role || '').toLowerCase();
+      if (role !== 'admin') return;
+
+      const adminPanel = document.getElementById('adminPanel');
+      if (!adminPanel) return;
+
+      adminPanel.classList.remove('d-none');
+
+      const idEl      = document.getElementById('adminOrderId');
+      const payIdEl   = document.getElementById('adminPaymentId');
+      const payStEl   = document.getElementById('adminPaymentStatus');
+      const historyEl = document.getElementById('adminHistory');
+
+      if (idEl)    idEl.textContent    = order.id || order._id || '-';
+      if (payIdEl) payIdEl.textContent = order.paymentId || order.webpayToken || '-';
+      if (payStEl) payStEl.textContent = order.paymentStatus || order.status || '-';
+
+      if (historyEl) {
+        if (Array.isArray(order.history) && order.history.length) {
+          historyEl.innerHTML = order.history
+            .map((ev) => {
+              const when = ev.date
+                ? new Date(ev.date).toLocaleString('es-CL')
+                : '';
+              return `<li>${when} : ${ev.status}</li>`;
+            })
+            .join('');
+        } else {
+          historyEl.innerHTML = '<li>Sin historial registrado.</li>';
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (btnIrAPagar) {
+        btnIrAPagar.addEventListener('click', () => {
+          if (!order) return;
+          const id = order._id || order.id;
+          if (!id) return;
+          window.location.href = 'caja_virtual.html?order=' + encodeURIComponent(id);
+        });
+      }
+      loadReceipt();
+    });
+  })();
+</script>
 </body>
 </html>

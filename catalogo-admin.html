@@ -12,15 +12,13 @@
 <nav class="bg-light border-bottom">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-between py-2 gap-2">
-      <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al‑Sahara</a>
+      <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al-Sahara</a>
       <ul class="nav gap-2 flex-wrap mb-0">
         <li class="nav-item"><a class="nav-link px-2" href="catalogo.html">Catálogo</a></li>
         <li class="nav-item"><a class="nav-link px-2" href="carrito.html">Carrito</a></li>
       </ul>
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span id="navUserName" class="badge text-bg-secondary d-none d-sm-inline-block">Nombre</span>
-        <a id="navUser" class="btn btn-sm btn-outline-secondary" href="login.html">Entrar</a>
-        <a id="navAdminPanel" class="btn btn-sm btn-outline-primary d-none" href="admin.html">Panel</a>
+        <div class="d-flex align-items-center gap-2 flex-wrap" id="navAuthArea"></div>
         <a id="navLogout" class="btn btn-sm btn-outline-danger d-none" href="#">Salir</a>
       </div>
     </div>
@@ -28,7 +26,8 @@
 </nav>
 
 <div class="container py-3">
-  <h1 class="h3 mb-3">Operaciones</h1>
+  <h1 class="h3 mb-3">Administración de productos</h1>
+
   <nav class="mb-3">
     <ul class="nav gap-2 flex-wrap">
       <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="admin.html">Panel</a></li>
@@ -39,29 +38,516 @@
       <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="anulaciones-admin.html">Anulaciones</a></li>
     </ul>
   </nav>
-<div class="card">
-  <div class="p">
-    <table id="tablaProd" class="table table-sm">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Precio</th>
-          <th>Categoría</th>
-          <th>Activo</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+
+  <!-- Card principal con tabla de productos -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <!-- Toolbar (el botón "Nuevo producto" se inyecta por JS con ensureToolbar) -->
+      <div class="table-responsive">
+        <table id="tablaProd" class="table table-sm align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Categoría</th>
+              <th>Activo</th>
+              <th style="width: 180px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="5" class="text-center text-muted py-3">
+                Cargando productos...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Modal para crear/editar producto -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="productForm" class="needs-validation" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="productModalTitle">Producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body vstack gap-3">
+          <div id="productFormAlert" class="alert alert-danger d-none" role="alert"></div>
+
+          <input type="hidden" id="productId">
+
+          <div>
+            <label for="productName" class="form-label">Nombre</label>
+            <input type="text" id="productName" class="form-control" required>
+          </div>
+
+          <div>
+            <label for="productPrice" class="form-label">Precio (CLP)</label>
+            <input type="number" id="productPrice" class="form-control" min="0" step="1" required>
+          </div>
+
+          <div>
+            <label for="productCategory" class="form-label">Categoría</label>
+            <select id="productCategory" class="form-select" required>
+              <option value="">Selecciona categoría...</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="productDescription" class="form-label">Descripción</label>
+            <textarea id="productDescription" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div>
+            <label for="productImageFile" class="form-label">Imagen del producto</label>
+            <input type="file" id="productImageFile" class="form-control" accept="image/*">
+            <div class="form-text">
+              Puedes subir una nueva imagen. Si no eliges archivo, se mantendrá la imagen actual.
+            </div>
+          </div>
+
+          <div id="currentImageWrapper" class="d-none">
+            <label class="form-label d-block">Imagen actual</label>
+            <img id="currentImagePreview" src="" alt="Imagen actual"
+                 class="img-fluid rounded border"
+                 style="max-height: 160px; object-fit: cover;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="productFormSubmit">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+
 <footer class="border-top">
   <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
     <a href="contacto.html" class="text-decoration-none">Contacto</a>
     <span class="small text-muted">© 2025 Al-Sahara</span>
   </div>
 </footer>
-</body>
-</html>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="api-client.js"></script>
+<script src="nav-auth.js"></script>
+<script>
+  (function () {
+    const api = window.AlSaharaAPI || {};
+    const { alSaharaFetch, clearAuthSession } = api;
+
+    const tbody = document.querySelector('#tablaProd tbody');
+
+    // Categorías fijas como "slug" + nombre
+    const categories = [
+      { id: 'shawarma',  name: 'Shawarma' },
+      { id: 'kebab',     name: 'Kebab' },
+      { id: 'falafel',   name: 'Falafel' },
+      { id: 'ensaladas', name: 'Ensaladas' },
+      { id: 'bebidas',   name: 'Bebidas' },
+      { id: 'dulces',    name: 'Dulces' },
+    ];
+
+    let products = [];
+
+    // Modal y campos
+    let productModal;
+    const productForm           = document.getElementById('productForm');
+    const productFormAlert      = document.getElementById('productFormAlert');
+    const productModalTitle     = document.getElementById('productModalTitle');
+    const productIdInput        = document.getElementById('productId');
+    const productNameInput      = document.getElementById('productName');
+    const productPriceInput     = document.getElementById('productPrice');
+    const productCategorySelect = document.getElementById('productCategory');
+    const productDescription    = document.getElementById('productDescription');
+    const productImageFile      = document.getElementById('productImageFile');
+    const currentImageWrapper   = document.getElementById('currentImageWrapper');
+    const currentImagePreview   = document.getElementById('currentImagePreview');
+    const productFormSubmit     = document.getElementById('productFormSubmit');
+
+    function handleAuthError(err, messageFallback) {
+      console.error(err);
+      if (err && (err.status === 401 || err.status === 403)) {
+        clearAuthSession?.();
+        window.location.href = 'login.html';
+      } else {
+        alert(err?.message || messageFallback || 'Error en la petición.');
+      }
+    }
+
+    function formatCLP(n) {
+      const num = Number(n) || 0;
+      return new Intl.NumberFormat('es-CL', {
+        style: 'currency',
+        currency: 'CLP',
+      }).format(num);
+    }
+
+    function getProductId(product) {
+      if (!product) return null;
+      return product.id || product._id || null;
+    }
+
+    function getCategoryName(catId) {
+      if (!catId) return '-';
+      const c = categories.find((cat) => String(cat.id) === String(catId));
+      return c ? c.name : catId;
+    }
+
+    function ensureToolbar() {
+      const table = document.querySelector('#tablaProd');
+      if (!table) return;
+
+      if (document.getElementById('btnNuevoProd')) return;
+
+      const toolbar = document.createElement('div');
+      toolbar.className =
+        'd-flex flex-wrap justify-content-between align-items-center mb-3 gap-2';
+
+      toolbar.innerHTML = `
+        <h2 class="h5 mb-0">Productos</h2>
+        <button type="button" class="btn btn-sm btn-primary" id="btnNuevoProd">
+          Nuevo producto
+        </button>
+      `;
+
+      table.parentElement.insertBefore(toolbar, table);
+
+      const btnNuevo = document.getElementById('btnNuevoProd');
+      if (btnNuevo) {
+        btnNuevo.addEventListener('click', () => openProductModalForCreate());
+      }
+    }
+
+    function renderCategoriesSelect() {
+      if (!productCategorySelect) return;
+      productCategorySelect.innerHTML =
+        '<option value="">Selecciona categoría...</option>';
+      categories.forEach((c) => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name;
+        productCategorySelect.appendChild(opt);
+      });
+    }
+
+    function renderTable() {
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (!products.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center text-muted py-3">
+              No hay productos registrados.
+            </td>
+          </tr>`;
+        return;
+      }
+
+      products.forEach((p) => {
+        const id         = getProductId(p);
+        const categoryId = p.categoryId || '';
+
+        const tr = document.createElement('tr');
+        tr.dataset.productId = id || '';
+
+        const tdName = document.createElement('td');
+        tdName.textContent = p.name || '';
+        tr.appendChild(tdName);
+
+        const tdPrice = document.createElement('td');
+        tdPrice.textContent =
+          p.price != null ? formatCLP(p.price) : formatCLP(0);
+        tr.appendChild(tdPrice);
+
+        const tdCat = document.createElement('td');
+        tdCat.textContent = getCategoryName(categoryId);
+        tr.appendChild(tdCat);
+
+        const tdActive = document.createElement('td');
+        const check = document.createElement('input');
+        check.type = 'checkbox';
+        check.className = 'form-check-input';
+        check.checked = p.active !== false;
+        check.addEventListener('change', () =>
+          handleToggleActive(p, tr, check)
+        );
+        tdActive.appendChild(check);
+        tr.appendChild(tdActive);
+
+        const tdAction = document.createElement('td');
+
+        const btnEdit = document.createElement('button');
+        btnEdit.className = 'btn btn-sm btn-outline-primary me-1';
+        btnEdit.textContent = 'Editar';
+        btnEdit.addEventListener('click', () => openProductModalForEdit(p));
+        tdAction.appendChild(btnEdit);
+
+        const btnDel = document.createElement('button');
+        btnDel.className = 'btn btn-sm btn-outline-danger';
+        btnDel.textContent = 'Eliminar';
+        btnDel.addEventListener('click', () => handleEliminarProducto(p, tr));
+        tdAction.appendChild(btnDel);
+
+        tr.appendChild(tdAction);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function handleToggleActive(product, tr, checkbox) {
+      const productId = getProductId(product);
+      if (!productId) {
+        console.warn('Producto sin id válido, no se puede actualizar:', product);
+        checkbox.checked = !checkbox.checked;
+        return;
+      }
+
+      try {
+        const updated = await alSaharaFetch(
+          '/products/' + encodeURIComponent(productId),
+          {
+            method: 'PATCH',
+            body: { active: checkbox.checked },
+          }
+        );
+
+        const idx = products.findIndex((x) => getProductId(x) === productId);
+        if (idx >= 0) {
+          products[idx] = { ...products[idx], ...updated, id: getProductId(updated) };
+        }
+
+        // No borramos la fila: queremos ver activos + inactivos
+        tr.dataset.productId = getProductId(updated) || '';
+      } catch (err) {
+        checkbox.checked = !checkbox.checked;
+        handleAuthError(err, 'Error al actualizar el estado del producto.');
+      }
+    }
+
+    async function handleEliminarProducto(product, tr) {
+      const productId = getProductId(product);
+      if (!productId) {
+        alert('No se puede eliminar un producto sin ID válido.');
+        return;
+      }
+
+      if (
+        !window.confirm(
+          `¿Eliminar el producto "${product.name}"? Esta acción no se puede deshacer.`
+        )
+      ) {
+        return;
+      }
+
+      try {
+        await alSaharaFetch('/products/' + encodeURIComponent(productId), {
+          method: 'DELETE',
+        });
+
+        const idx = products.findIndex((x) => getProductId(x) === productId);
+        if (idx >= 0) {
+          products.splice(idx, 1);
+        }
+
+        if (tr && tr.parentElement) {
+          tr.parentElement.removeChild(tr);
+        }
+      } catch (err) {
+        handleAuthError(err, 'Error al eliminar el producto.');
+      }
+    }
+
+    function clearProductFormAlert() {
+      if (!productFormAlert) return;
+      productFormAlert.classList.add('d-none');
+      productFormAlert.textContent = '';
+    }
+
+    function showProductFormAlert(msg) {
+      if (!productFormAlert) return;
+      productFormAlert.textContent = msg;
+      productFormAlert.classList.remove('d-none');
+    }
+
+    function resetProductForm() {
+      clearProductFormAlert();
+      if (productForm) productForm.reset();
+      if (productIdInput) productIdInput.value = '';
+      if (productImageFile) productImageFile.value = '';
+      if (currentImageWrapper) currentImageWrapper.classList.add('d-none');
+      if (currentImagePreview) currentImagePreview.src = '';
+    }
+
+    function openProductModalForCreate() {
+      resetProductForm();
+      if (productModalTitle) productModalTitle.textContent = 'Nuevo producto';
+      if (productFormSubmit) productFormSubmit.textContent = 'Crear producto';
+      if (productModal) productModal.show();
+    }
+
+    function openProductModalForEdit(product) {
+      resetProductForm();
+      if (productModalTitle) {
+        productModalTitle.textContent = 'Editar producto';
+      }
+      if (productFormSubmit) {
+        productFormSubmit.textContent = 'Guardar cambios';
+      }
+
+      const catId = product.categoryId || '';
+
+      if (productIdInput)        productIdInput.value        = getProductId(product) || '';
+      if (productNameInput)      productNameInput.value      = product.name || '';
+      if (productPriceInput)     productPriceInput.value     = product.price ?? '';
+      if (productCategorySelect) productCategorySelect.value = catId || '';
+      if (productDescription)    productDescription.value    = product.description || '';
+
+      if (product.image && currentImageWrapper && currentImagePreview) {
+        currentImagePreview.src = `${api.API_BASE}${product.image}`;
+        currentImageWrapper.classList.remove('d-none');
+      }
+
+      if (productModal) productModal.show();
+    }
+
+    async function uploadImageIfNeeded() {
+      if (!productImageFile || !productImageFile.files.length) {
+        return null; // no hay archivo nuevo
+      }
+      const file = productImageFile.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const result = await alSaharaFetch('/uploads/images', {
+        method: 'POST',
+        body: formData,
+      });
+
+      return result?.url || null;
+    }
+
+    async function handleProductFormSubmit(event) {
+      event.preventDefault();
+      clearProductFormAlert();
+
+      const name       = productNameInput?.value.trim();
+      const priceRaw   = productPriceInput?.value;
+      const price      = Number(priceRaw);
+      const categoryId = productCategorySelect?.value;
+      const description= productDescription?.value.trim() || '';
+      const existingId = productIdInput?.value || null;
+
+      if (!name || !Number.isFinite(price) || price < 0 || !categoryId) {
+        showProductFormAlert('Completa correctamente los campos obligatorios.');
+        return;
+      }
+
+      try {
+        if (productFormSubmit) productFormSubmit.disabled = true;
+
+        // Subimos imagen si hay archivo
+        let imageUrl = null;
+        try {
+          imageUrl = await uploadImageIfNeeded();
+        } catch (uploadErr) {
+          console.error('Error subiendo imagen', uploadErr);
+          showProductFormAlert(
+            uploadErr?.message || 'No se pudo subir la imagen.'
+          );
+          if (productFormSubmit) productFormSubmit.disabled = false;
+          return;
+        }
+
+        // Construimos payload
+        const body = {
+          name,
+          price,
+          categoryId,
+          description,
+        };
+
+        // Si estamos editando, mantenemos la imagen anterior si no hay nueva
+        if (existingId) {
+          const original = products.find((p) => getProductId(p) === existingId);
+          if (imageUrl) {
+            body.image = imageUrl;
+          } else if (original && original.image) {
+            body.image = original.image;
+          }
+        } else {
+          if (imageUrl) {
+            body.image = imageUrl;
+          }
+        }
+
+        let result;
+        if (existingId) {
+          result = await alSaharaFetch(
+            '/products/' + encodeURIComponent(existingId),
+            {
+              method: 'PATCH',
+              body,
+            }
+          );
+          const idx = products.findIndex((p) => getProductId(p) === existingId);
+          if (idx >= 0) products[idx] = result;
+        } else {
+          result = await alSaharaFetch('/products', {
+            method: 'POST',
+            body: { ...body, active: true },
+          });
+          products.push(result);
+        }
+
+        renderTable();
+        if (productModal) productModal.hide();
+      } catch (err) {
+        console.error('Error guardando producto', err);
+        if (err && (err.status === 401 || err.status === 403)) {
+          clearAuthSession?.();
+          window.location.href = 'login.html';
+        } else {
+          showProductFormAlert(err?.message || 'Error al guardar el producto.');
+        }
+      } finally {
+        if (productFormSubmit) productFormSubmit.disabled = false;
+      }
+    }
+
+    async function loadProducts() {
+      try {
+        const data = await alSaharaFetch('/products?scope=admin', { method: 'GET' });
+
+        const raw = Array.isArray(data) ? data : [];
+        products = raw.map((p) => ({
+          ...p,
+          id: getProductId(p),
+        }));
+
+        renderTable();
+      } catch (err) {
+        handleAuthError(err, 'Error al cargar productos.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof bootstrap !== 'undefined' && document.getElementById('productModal')) {
+        productModal = new bootstrap.Modal(document.getElementById('productModal'));
+      }
+      ensureToolbar();
+      renderCategoriesSelect();
+      if (productForm) {
+        productForm.addEventListener('submit', handleProductFormSubmit);
+      }
+      await loadProducts();
+    });
+  })();
+</script>

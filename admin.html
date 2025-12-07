@@ -8,11 +8,6 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-<script>
-  if (localStorage.getItem('role') !== 'admin') {
-    window.location.href = 'login.html';
-  }
-</script>
 
 <nav class="bg-light border-bottom">
   <div class="container">
@@ -23,9 +18,7 @@
         <li class="nav-item"><a class="nav-link px-2" href="carrito.html">Carrito</a></li>
       </ul>
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span id="navUserName" class="badge text-bg-secondary d-none d-sm-inline-block">Nombre</span>
-        <a id="navUser" class="btn btn-sm btn-outline-secondary" href="login.html">Entrar</a>
-        <a id="navAdminPanel" class="btn btn-sm btn-outline-primary d-none" href="admin.html">Panel</a>
+        <div class="d-flex align-items-center gap-2 flex-wrap" id="navAuthArea"></div>
         <a id="navLogout" class="btn btn-sm btn-outline-danger d-none" href="#">Salir</a>
       </div>
     </div>
@@ -33,7 +26,8 @@
 </nav>
 
 <div class="container py-3">
-  <h1 class="h3 mb-3">Operaciones</h1>
+  <h1 class="h3 mb-3">Panel de administración</h1>
+
   <nav class="mb-3">
     <ul class="nav gap-2 flex-wrap">
       <li class="nav-item"><a class="btn btn-sm btn-primary" href="admin.html">Panel</a></li>
@@ -44,45 +38,46 @@
       <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="anulaciones-admin.html">Anulaciones</a></li>
     </ul>
   </nav>
-<div class="row">
-  <div class="col-4">
-    <div class="card">
-      <div class="p">
-        <div class="ph-text"></div>
-        <div class="ph-text"></div>
+
+  <div class="row g-3">
+    <!-- ÓRDENES DEL DÍA -->
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Total ventas del día</h5>
+          <p class="card-text fs-3 fw-bold mb-1" id="ordersTodayAmount">$0</p>
+          <p class="small mb-0">
+            Órdenes del día
+            <span class="fw-semibold" id="ordersToday">—</span>
+          </p>
+          <p class="small text-muted mt-1">Órdenes generadas en la fecha de hoy.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTOS BAJO STOCK -->
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Productos con bajo stock</h5>
+          <ul id="lowStockList" class="small mb-0"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTOS MÁS / MENOS VENDIDOS -->
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Ventas</h5>
+          <p class="small mb-1"><strong>Más vendido:</strong> <span id="bestProduct">—</span></p>
+          <p class="small"><strong>Menos vendido:</strong> <span id="worstProduct">—</span></p>
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="col-4">
-    <div class="card">
-      <div class="p">
-        <div class="ph-text"></div>
-        <div class="ph-text"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-4">
-    <div class="card">
-      <div class="p">
-        <div class="ph-text"></div>
-        <div class="ph-text"></div>
-      </div>
-    </div>
-  </div>
-</div><div class="card"><div class="p">
-  <h3>Datos demo</h3>
-  <p class="small">Genera órdenes y datos de ejemplo para probar reportes y flujos. Solo visible en Panel (admins).</p>
-  <div class="row">
-    <div class="col-4"><button class="btn primary" id="btnSeedDemo">Cargar datos demo</button></div>
-    <div class="col-4"><button class="btn" id="btnClearSoft">Limpiar pedidos (soft)</button></div>
-    <div class="col-4"><button class="btn" id="btnResetHard">Restablecer todo (fábrica)</button></div>
-  </div>
-  <div id="toastSeed" class="toast" aria-live="polite"></div>
-</div></div>
-
 </div>
+
 
 <footer class="border-top">
   <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
@@ -90,4 +85,106 @@
     <span class="small text-muted">© 2025 Al-Sahara</span>
   </div>
 </footer>
-</body></html>
+
+<script src="api-client.js"></script>
+<script src="nav-auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const api = window.AlSaharaAPI;
+  if (!api) return;
+
+  const ordersTodayEl      = document.getElementById('ordersToday');
+  const ordersTodayAmountEl = document.getElementById('ordersTodayAmount');
+  const lowStockListEl     = document.getElementById('lowStockList');
+  const bestProductEl      = document.getElementById('bestProduct');
+  const worstProductEl     = document.getElementById('worstProduct');
+
+  function formatCLP(n) {
+    const num = Number(n) || 0;
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+    }).format(num);
+  }
+
+  try {
+    // 1. Obtener todas las órdenes (admin)
+    const allOrders = await api.alSaharaFetch('/orders');
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+
+    const ordersToday = allOrders.filter(o =>
+      o.createdAt && o.createdAt.slice(0, 10) === today
+    );
+
+    // Cantidad de órdenes del día
+    ordersTodayEl.textContent = ordersToday.length;
+
+    // Monto total vendido en el día
+    let totalToday = 0;
+    ordersToday.forEach(o => {
+      let subtotal = 0;
+      (o.items || []).forEach(it => {
+        const price = Number(it.price ?? it.unitPrice ?? 0);
+        const qty   = Number(it.quantity ?? 0);
+        subtotal += price * qty;
+      });
+
+      const deliveryFee = Number(o.deliveryFee || 0);
+      const tip         = Number(o.tip || 0);
+      const totalOrder  = Number(o.total) || (subtotal + deliveryFee + tip);
+
+      totalToday += totalOrder;
+    });
+
+    if (ordersTodayAmountEl) {
+      ordersTodayAmountEl.textContent = formatCLP(totalToday);
+    }
+
+    // 2. Productos con bajo stock
+    const products = await api.alSaharaFetch('/products');
+
+    const lowStock = products.filter(p => Number(p.stock) < 10);
+
+    if (!lowStock.length) {
+      lowStockListEl.innerHTML = "<li class='text-muted'>Sin alertas de stock</li>";
+    } else {
+      lowStockListEl.innerHTML = lowStock
+        .map(p => `<li>${p.name} — Stock: ${p.stock}</li>`)
+        .join('');
+    }
+
+    // 3. Producto más y menos vendido
+    const salesMap = {};
+
+    allOrders.forEach(order => {
+      (order.items || []).forEach(item => {
+        const name = item.name || item.productName || item.productId || '(Producto)';
+        const qty  = Number(item.quantity || 0);
+        if (!salesMap[name]) salesMap[name] = 0;
+        salesMap[name] += qty;
+      });
+    });
+
+    const entries = Object.entries(salesMap);
+
+    if (!entries.length) {
+      bestProductEl.textContent  = '—';
+      worstProductEl.textContent = '—';
+    } else {
+      const sorted = entries.sort((a, b) => b[1] - a[1]);
+      const [bestName, bestQty]   = sorted[0];
+      const [worstName, worstQty] = sorted[sorted.length - 1];
+
+      bestProductEl.textContent  = `${bestName} (${bestQty} uds.)`;
+      worstProductEl.textContent = `${worstName} (${worstQty} uds.)`;
+    }
+
+  } catch (err) {
+    console.error('[ADMIN DASHBOARD ERROR]', err);
+  }
+});
+</script>
+
+
+</body>
+</html>

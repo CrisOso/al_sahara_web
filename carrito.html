@@ -15,174 +15,110 @@
       <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al-Sahara</a>
       <ul class="nav gap-2 flex-wrap mb-0">
         <li class="nav-item"><a class="nav-link px-2" href="catalogo.html">Catálogo</a></li>
-        <li class="nav-item"><a class="nav-link px-2" href="carrito.html">Carrito</a></li>
+        <li class="nav-item"><a class="nav-link px-2 active" href="carrito.html">Carrito</a></li>
         <li class="nav-item"><a class="nav-link px-2" href="mis-pedidos.html">Mis pedidos</a></li>
       </ul>
-      <div class="d-flex align-items-center gap-2 flex-wrap">
-        <a class="btn btn-sm btn-outline-secondary" href="login.html">Entrar</a>
-        <a class="btn btn-sm btn-outline-primary" href="registro.html">Registrarse</a>
-      </div>
+      <div id="navAuthArea"></div>
     </div>
   </div>
 </nav>
 
-<main class="container my-4">
-  <h1 class="h4 mb-3">Texto de Carrito</h1>
+<main class="py-4">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-12 col-lg-8">
+        <h1 class="h4 mb-3">Carrito</h1>
 
-  <div class="row g-4">
-    <div class="col-12 col-lg-8">
-      <section class="card shadow-sm mb-3">
-        <div class="card-body">
-          <div class="row g-3 align-items-center">
-            <div class="col-12 col-md-3">
-              <div class="ratio ratio-1x1 bg-light border d-flex align-items-center justify-content-center text-muted">
-                <span>Imagen</span>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="small text-muted mb-1">Nombre</div>
-              <div class="fw-semibold">Shawarma de Pollo</div>
-              <div class="small text-muted mt-2">Valor Unitario</div>
-              <div>$5.990</div>
-              <div class="small text-muted mt-2">Cantidad</div>
-              <input type="number" class="form-control form-control-sm qty-input" value="4" min="1">
-            </div>
-            <div class="col-12 col-md-3 text-md-end">
-              <div class="small text-muted mb-1">Subtotal</div>
-              <div class="fw-semibold">$23.960</div>
-              <button class="btn btn-outline-secondary btn-sm mt-3">Quitar</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card shadow-sm mb-3">
-        <div class="card-body">
-          <div class="row g-3 align-items-center">
-            <div class="col-12 col-md-3">
-              <div class="ratio ratio-1x1 bg-light border d-flex align-items-center justify-content-center text-muted">
-                <span>Imagen</span>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="small text-muted mb-1">Nombre</div>
-              <div class="fw-semibold">Falafel Box</div>
-              <div class="small text-muted mt-2">Valor Unitario</div>
-              <div>$4.990</div>
-              <div class="small text-muted mt-2">Cantidad</div>
-              <input type="number" class="form-control form-control-sm qty-input" value="4" min="1">
-            </div>
-            <div class="col-12 col-md-3 text-md-end">
-              <div class="small text-muted mb-1">Subtotal</div>
-              <div class="fw-semibold">$19.960</div>
-              <button class="btn btn-outline-secondary btn-sm mt-3">Quitar</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card shadow-sm mb-3">
-        <div class="card-body">
-          <div class="row g-3 align-items-center">
-            <div class="col-12 col-md-3">
-              <div class="ratio ratio-1x1 bg-light border d-flex align-items-center justify-content-center text-muted">
-                <span>Imagen</span>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="small text-muted mb-1">Nombre</div>
-              <div class="fw-semibold">Kebab Mixto</div>
-              <div class="small text-muted mt-2">Valor Unitario</div>
-              <div>$6.490</div>
-              <div class="small text-muted mt-2">Cantidad</div>
-              <input type="number" class="form-control form-control-sm qty-input" value="4" min="1">
-            </div>
-            <div class="col-12 col-md-3 text-md-end">
-              <div class="small text-muted mb-1">Subtotal</div>
-              <div class="fw-semibold">$25.960</div>
-              <button class="btn btn-outline-secondary btn-sm mt-3">Quitar</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <aside class="col-12 col-lg-4">
-      <div class="position-lg-sticky top-20">
-        <div class="card shadow-sm mb-3">
-          <div class="card-header py-2"><strong>Totales</strong></div>
-          <div class="card-body">
-            <div class="d-flex justify-content-between"><span>Subtotal</span><span>$69.880</span></div>
-            <div class="d-flex justify-content-between"><span>Descuento</span><span>$0</span></div>
-            <div class="d-flex justify-content-between"><span>Envío</span><span>$2.000</span></div>
-            <div class="d-flex justify-content-between"><span>Propina</span><span>$0</span></div>
-            <hr>
-            <div class="d-flex justify-content-between fw-semibold"><span>Total</span><span>$71.880</span></div>
+        <div id="emptyCart" class="card shadow-sm mb-3 d-none">
+          <div class="card-body text-center">
+            <p class="mb-2">Tu carrito está vacío.</p>
+            <a href="catalogo.html" class="btn btn-outline-primary btn-sm">Ver catálogo</a>
           </div>
         </div>
 
-        <div class="card shadow-sm mb-3">
-          <div class="card-body">
-            <div class="fw-semibold mb-2">Retiro / Delivery</div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="entrega" id="optRetiro" checked>
-              <label class="form-check-label" for="optRetiro">Retiro</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="entrega" id="optDelivery">
-              <label class="form-check-label" for="optDelivery">Delivery</label>
-            </div>
-          </div>
-        </div>
-
-        <div id="addressCard" class="card shadow-sm mb-3 d-none">
-          <div class="card-body">
-            <div class="fw-semibold mb-2">Dirección</div>
-            <input id="addressInput" type="text" class="form-control" placeholder="Entrada de dirección" disabled>
-          </div>
-        </div>
-
-        <div class="card shadow-sm mb-3">
-          <div class="card-body">
-            <div class="fw-semibold mb-2">Método de pago</div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="pago" id="optTarjeta" checked>
-              <label class="form-check-label" for="optTarjeta">Tarjeta</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="pago" id="optCaja">
-              <label class="form-check-label" for="optCaja">Caja/Entrega</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="card shadow-sm mb-3">
-          <div class="card-body">
-            <div class="fw-semibold mb-2">Cupón</div>
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Entrada de Cupón">
-              <button class="btn btn-outline-primary">Aplicar cupón</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card shadow-sm mb-3">
-          <div class="card-body">
-            <div class="fw-semibold mb-2">Propina</div>
-            <div class="input-group w-50">
-              <label class="input-group-text" for="propinaSelect">%</label>
-              <select id="propinaSelect" class="form-select form-select-sm">
-                <option value="10" selected>10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <a href="caja_virtual.html" class="btn btn-primary w-100">Confirmar pedido</a>
+        <div id="cartItemsContainer"></div>
       </div>
-    </aside>
+
+      <aside class="col-12 col-lg-4">
+        <div class="position-lg-sticky top-20">
+          <div class="card shadow-sm mb-3" id="cartSummary">
+            <div class="card-header py-2"><strong>Totales</strong></div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between"><span>Subtotal</span><span id="subtotalAmount">$0<span></div>
+              <div class="d-flex justify-content-between"><span>Descuento</span><span>$0</span></div>
+              <div class="d-flex justify-content-between"><span>Envío</span><span id="deliveryAmount">$0</span></div>
+              <div class="d-flex justify-content-between"><span>Propina</span><span id="tipAmount">$0</span></div>
+              <hr>
+              <div class="d-flex justify-content-between fw-semibold"><span>Total</span><span id="totalAmount">$0</span></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Notas del pedido (opcional)</label>
+            <textarea id="orderNote" class="form-control" rows="2"
+              placeholder="Ej: Sin cebolla, agregar salsa extra"></textarea>
+          </div>
+          
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Retiro / Delivery</div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="entrega" id="optRetiro" checked>
+                <label class="form-check-label" for="optRetiro">Retiro</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="entrega" id="optDelivery">
+                <label class="form-check-label" for="optDelivery">Delivery</label>
+              </div>
+            </div>
+          </div>
+
+          <div id="addressCard" class="card shadow-sm mb-3 d-none">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Dirección</div>
+              <input id="addressInput" type="text" class="form-control" placeholder="Entrada de dirección" disabled>
+            </div>
+          </div>
+
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Método de pago</div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="pago" id="optTarjeta" checked>
+                <label class="form-check-label" for="optTarjeta">Tarjeta</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="pago" id="optCaja">
+                <label class="form-check-label" for="optCaja">Caja/Entrega</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Cupón</div>
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Entrada de Cupón">
+                <button class="btn btn-outline-primary">Aplicar cupón</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Propina</div>
+              <select id="propinaSelect" class="form-select form-select-sm mb-2">
+                <option value="0">Sin propina</option>
+                <option value="0.05">5%</option>
+                <option value="0.1">10%</option>
+                <option value="0.15">15%</option>
+              </select>
+              <button id="btnConfirmOrder" class="btn btn-primary w-100">Confirmar pedido</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
   </div>
 </main>
 
@@ -195,5 +131,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="app.js"></script>
+<script src="api-client.js"></script>
+<script src="nav-auth.js"></script>
+<script src="order-utils.js"></script>
 </body>
 </html>

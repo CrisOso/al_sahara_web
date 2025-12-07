@@ -18,9 +18,7 @@
         <li class="nav-item"><a class="nav-link px-2" href="carrito.html">Carrito</a></li>
       </ul>
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span id="navUserName" class="badge text-bg-secondary d-none d-sm-inline-block">Nombre</span>
-        <a id="navUser" class="btn btn-sm btn-outline-secondary" href="login.html">Entrar</a>
-        <a id="navAdminPanel" class="btn btn-sm btn-outline-primary d-none" href="admin.html">Panel</a>
+        <div class="d-flex align-items-center gap-2 flex-wrap" id="navAuthArea"></div>
         <a id="navLogout" class="btn btn-sm btn-outline-danger d-none" href="#">Salir</a>
       </div>
     </div>
@@ -44,17 +42,21 @@
     <div class="col-12 col-md-4">
       <select id="filtroEstado" class="form-select form-select-sm">
         <option value="">Todos los estados</option>
-        <option value="Nuevo">Nuevo</option>
-        <option value="En Preparación">En Preparación</option>
-        <option value="Listo para retiro">Listo para retiro</option>
-        <option value="Despachado">Despachado</option>
-        <option value="Entregado">Entregado</option>
+        <option value="pending">Pendiente</option>
+        <option value="paid">Pagado</option>
+        <option value="delivering">En reparto</option>
+        <option value="completed">Completado</option>
+        <option value="cancelled">Cancelado</option>
+        <option value="failed">Fallido</option>
+        <option value="refunded">Reembolsado</option>
       </select>
     </div>
     <div class="col-12 col-md-4">
-      <input id="filtroTexto" class="form-control form-control-sm" placeholder="Buscar por #pedido, cliente o teléfono">
+      <input id="filtroTexto" class="form-control form-control-sm"
+             placeholder="Buscar por #pedido, cliente o correo">
     </div>
   </div>
+
   <div class="accordion" id="acPedidos"></div>
 </div>
 
@@ -66,179 +68,283 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
+<script src="app.js"></script>
+<script src="api-client.js"></script>
+<script src="nav-auth.js"></script>
 <script>
-const pedidos = [
-  {
-    id: 1234,
-    fecha: "2025-12-12 15:45:32",
-    items: 2,
-    cliente: { nombre: "Nombre Apellido", telefono: "+56987548754" },
-    direccion: "Av. Las Camelias 123, Santiago",
-    estado: "Entregado",
-    historial: [
-      { ts: "2025-12-12 15:45:32", msg: "Nuevo" },
-      { ts: "2025-12-12 15:46:24", msg: "En Preparación" },
-      { ts: "2025-12-12 15:55:15", msg: "Listo para retiro" },
-      { ts: "2025-12-12 16:10:12", msg: "Despachado" },
-      { ts: "2025-12-12 17:01:40", msg: "Entregado" },
-    ],
-    token: "tok_abc123"
-  },
-  {
-    id: 1235,
-    fecha: "2025-12-14 11:22:10",
-    items: 5,
-    cliente: { nombre: "Cliente 2", telefono: "+56911112222" },
-    direccion: "Calle Olivo 456, Ñuñoa",
-    estado: "En Preparación",
-    historial: [
-      { ts: "2025-12-14 11:22:10", msg: "Nuevo" },
-      { ts: "2025-12-14 11:23:00", msg: "En Preparación" },
-    ],
-    token: "tok_xyz789"
+  (function () {
+    const api = window.AlSaharaAPI || {};
+    const { alSaharaFetch, getStoredUser } = api;
+
+    const acPedidos = document.getElementById('acPedidos');
+    const filtroEstado = document.getElementById('filtroEstado');
+    const filtroTexto = document.getElementById('filtroTexto');
+
+    // Mapeo de estados internos -> etiqueta + color bootstrap
+    const STATUS_MAP = {
+      pending:    { label: 'Pendiente',    className: 'secondary' },
+      paid:       { label: 'Pagado',       className: 'primary' },
+      delivering: { label: 'En reparto',   className: 'info' },
+      completed:  { label: 'Completado',   className: 'success' },
+      cancelled:  { label: 'Cancelado',    className: 'warning' },
+      failed:     { label: 'Fallido',      className: 'danger' },
+      refunded:   { label: 'Reembolsado',  className: 'secondary' },
+    };
+
+    function mapStatus(status) {
+      return STATUS_MAP[status] || { label: status || 'Desconocido', className: 'secondary' };
+    }
+
+    function formatCLP(n) {
+      const num = Number(n) || 0;
+      return new Intl.NumberFormat('es-CL', {
+        style: 'currency',
+        currency: 'CLP',
+      }).format(num);
+    }
+
+    function statusOptionsMarkup(current) {
+      const keys = ['pending', 'paid', 'delivering', 'completed', 'cancelled', 'failed', 'refunded'];
+      return keys
+        .map((key) => {
+          const info = mapStatus(key);
+          const sel = key === current ? 'selected' : '';
+          return `<option value="${key}" ${sel}>${info.label}</option>`;
+        })
+        .join('');
+    }
+
+    let allOrders = [];
+
+    async function loadOrders() {
+      const user = getStoredUser && getStoredUser();
+
+      if (!user || user.role !== 'admin') {
+        if (acPedidos) {
+          acPedidos.innerHTML = `
+            <div class="alert alert-warning">
+              Debes iniciar sesión como <strong>administrador</strong> para ver los pedidos.<br>
+              <a href="login.html" class="alert-link">Ir a login</a>
+            </div>`;
+        }
+        return;
+      }
+
+      if (!alSaharaFetch) {
+        if (acPedidos) {
+          acPedidos.innerHTML = `
+            <div class="alert alert-danger">
+              API no disponible en este entorno.
+            </div>`;
+        }
+        return;
+      }
+
+      try {
+        const orders = await alSaharaFetch('/orders', { method: 'GET' });
+        allOrders = Array.isArray(orders) ? orders : [];
+        render(applyFilters());
+      } catch (e) {
+        console.error('Error cargando pedidos admin', e);
+        if (acPedidos) {
+          acPedidos.innerHTML = `
+            <div class="alert alert-danger">
+              No se pudieron cargar los pedidos. Intenta nuevamente más tarde.
+            </div>`;
+        }
+      }
+    }
+
+    function applyFilters() {
+      const est = filtroEstado ? filtroEstado.value : '';
+      const txt = filtroTexto ? filtroTexto.value.trim().toLowerCase() : '';
+
+      return allOrders.filter((o) => {
+        const okEst = !est || o.status === est;
+
+        const blob = `${o.id || o._id} ${o.customerName || ''} ${o.customerEmail || ''}`.toLowerCase();
+        const okTxt = !txt || blob.includes(txt);
+
+        return okEst && okTxt;
+      });
+    }
+    
+  async function patchOrderStatus(id, newStatus) {
+    try {
+      await alSaharaFetch(`/orders/${encodeURIComponent(id)}/status`, {
+        method: 'PATCH',
+        body: { status: newStatus },
+      });
+
+      const o = allOrders.find((x) => (x.id || x._id) === id);
+      if (o) o.status = newStatus;
+
+      render(applyFilters());
+    } catch (e) {
+      console.error('Error actualizando estado pedido', e);
+      alert('No se pudo actualizar el estado del pedido.');
+    }
   }
-];
 
-const ESTILO_ESTADO = {
-  "Nuevo": "secondary",
-  "En Preparación": "warning",
-  "Listo para retiro": "info",
-  "Despachado": "primary",
-  "Entregado": "success"
-};
 
-function badgeEstado(estado) {
-  const cls = ESTILO_ESTADO[estado] || "light";
-  return `<span class="badge text-bg-${cls} op-badge">${estado}</span>`;
-}
+  function render(list) {
+    if (!acPedidos) return;
 
-function fmtCabecera(p) {
-  return `
-    <div class="d-flex w-100 justify-content-between align-items-center">
-      <div>
-        <strong>Pedido #${p.id}</strong>
-        <div class="small-muted">${p.fecha} — ${p.items} productos</div>
-      </div>
-      <div>${badgeEstado(p.estado)}</div>
-    </div>
-  `;
-}
+    if (!list.length) {
+      acPedidos.innerHTML = `
+        <div class="alert alert-info">
+          No hay pedidos para los filtros seleccionados.
+        </div>`;
+      return;
+    }
 
-function urlQR(p) {
-  const maps = encodeURIComponent(p.direccion);
-  return `https://www.google.com/maps/search/?api=1&query=${maps}&orderId=${p.id}&token=${p.token}`;
-}
+    const html = list.map((o, idx) => {
+      const headId     = `order-head-${idx}`;
+      const collapseId = `order-collapse-${idx}`;
+      const statusInfo = mapStatus(o.status);
 
-function ahora() {
-  const d = new Date();
-  const pad = n => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
+      const created = o.createdAt
+        ? new Date(o.createdAt).toLocaleString('es-CL')
+        : '';
 
-const ac = document.getElementById("acPedidos");
+      const customer = o.customerName || '(sin nombre)';
+      const email    = o.customerEmail || '';
+      const phone    = o.customerPhone || '-';
 
-function render(lista) {
-  ac.innerHTML = "";
-  lista.forEach((p, idx) => {
-    const itemId = `item${p.id}`;
-    const headId = `head${p.id}`;
-    const collapseId = `col${p.id}`;
+      const id       = o.id || o._id;
+      const totalFmt = formatCLP(o.total);
 
-    const card = document.createElement("div");
-    card.className = "accordion-item card-hover";
+      const entrega =
+        o.deliveryMethod === 'delivery'
+          ? (o.address || '(sin dirección)')
+          : 'Retiro en local';
 
-    card.innerHTML = `
-      <h2 class="accordion-header" id="${headId}">
-        <button class="accordion-button collapsed" type="button"
-                data-bs-toggle="collapse" data-bs-target="#${collapseId}"
-                aria-expanded="false" aria-controls="${collapseId}">
-          ${fmtCabecera(p)}
-        </button>
-      </h2>
-      <div id="${collapseId}" class="accordion-collapse collapse" aria-labelledby="${headId}"
-           data-bs-parent="#acPedidos">
-        <div class="accordion-body">
-          <div class="row g-3">
-            <div class="col-12 col-md-6">
-              <div class="d-flex justify-content-between">
-                <div>
-                  <div><strong>Cliente:</strong> ${p.cliente.nombre}</div>
-                  <div><strong>Teléfono:</strong> ${p.cliente.telefono}</div>
-                  <div><strong>Dirección:</strong> ${p.direccion}</div>
-                </div>
-                <div>
-                  ${badgeEstado(p.estado)}
-                </div>
-              </div>
-              <hr class="my-2">
-              <div class="d-flex gap-2 flex-wrap">
-                <button class="btn btn-sm btn-outline-primary js-despachar" data-id="${p.id}">Marcar Despachado</button>
-                <button class="btn btn-sm btn-outline-success js-entregado" data-id="${p.id}">Marcar Entregado</button>
-              </div>
-            </div>
+      const numProductos = Array.isArray(o.items)
+        ? o.items.reduce((acc, it) => acc + (it.quantity || 0), 0)
+        : 0;
 
-            <div class="col-12 col-md-3">
-              <h6 class="mb-2">Historial</h6>
-              <ul class="timeline" id="tl-${p.id}">
-                ${p.historial.map(h => `<li><strong>${h.ts}</strong>: ${h.msg}</li>`).join("")}
-              </ul>
-            </div>
+      // Texto “12/12/2012 15:45:32 -- 2 productos”
+      const subHeader = `${created}${
+        numProductos
+          ? ` -- ${numProductos} producto${numProductos === 1 ? '' : 's'}`
+          : ''
+      }`;
 
-            <div class="col-12 col-md-3">
-              <h6 class="mb-2">QR de Ruta</h6>
-              <div class="qr-box border rounded p-2 d-flex align-items-center justify-content-center" id="qr-${p.id}">
-                <!-- QR se genera al expandir -->
-              </div>
-              <div class="small-muted mt-2">Al escanear: abre Maps con la dirección y (en productivo) marca el pedido como “Despachado”.</div>
-              <button class="btn btn-sm btn-outline-dark mt-2 js-simular" data-id="${p.id}">Simular escaneo QR</button>
-            </div>
+      // Historial simple (puedes refinarlo después si guardas más timestamps)
+      const historyLines = [
+        `${created} : Nuevo`,
+        o.status === 'paid'       ? `${created} : Pagado`       : null,
+        o.status === 'delivering' ? `${created} : En preparación` : null,
+        o.status === 'completed'  ? `${created} : Listo para retiro/entrega` : null,
+      ].filter(Boolean);
+
+      return `
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="${headId}">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#${collapseId}"
+              aria-expanded="false" aria-controls="${collapseId}">
+        <div class="d-flex flex-column flex-md-row w-100 justify-content-between align-items-md-center gap-2">
+          <div>
+            <div class="fw-semibold">Pedido ${id}</div>
+            <div class="small text-muted">${subHeader}</div>
+          </div>
+
+          <div class="text-primary small fw-semibold text-md-center">
+            Generar orden de despacho
+          </div>
+
+          <div class="text-md-end">
+            <div class="fw-semibold">${totalFmt}</div>
+            <span class="badge text-bg-${statusInfo.className}">
+              ${statusInfo.label}
+            </span>
           </div>
         </div>
-      </div>
-    `;
-    ac.appendChild(card);
+      </button>
+    </h2>
 
-    const collapseEl = card.querySelector(`#${collapseId}`);
-    collapseEl.addEventListener('shown.bs.collapse', () => {
-      const box = card.querySelector(`#qr-${p.id}`);
-      if (!box.dataset.rendered) {
-        new QRCode(box, { text: urlQR(p), width: 128, height: 128 });
-        box.dataset.rendered = "1";
-      }
+    <div id="${collapseId}" class="accordion-collapse collapse" aria-labelledby="${headId}"
+        data-bs-parent="#acPedidos">
+      <div class="accordion-body">
+        <div class="row g-3">
+          <!-- Columna izquierda: Cliente / Teléfono / Dirección -->
+          <div class="col-12 col-md-4">
+            <p class="mb-1"><strong>Cliente:</strong> ${customer}</p>
+            <p class="mb-1"><strong>Teléfono:</strong> ${phone}</p>
+            <p class="mb-1"><strong>Dirección:</strong> ${entrega}</p>
+          </div>
+
+          <!-- Columna central: Estado + botones -->
+          <div class="col-12 col-md-4 d-flex flex-column align-items-start align-items-md-center gap-2">
+            <div>
+              <span class="small text-muted d-block mb-1">Estado</span>
+              <select class="form-select form-select-sm js-order-status" data-id="${id}">
+                ${statusOptionsMarkup(o.status)}
+              </select>
+            </div>
+          </div>
+
+          <!-- Columna derecha: Historial -->
+          <div class="col-12 col-md-4">
+            <div class="small text-muted mb-1">Historial</div>
+            <ul class="small mb-0 list-unstyled">
+              ${historyLines
+                .map((line) => `<li>${line}</li>`)
+                .join('')}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Botón Ver detalle alineado abajo (opcional) -->
+        <div class="mt-3 text-end">
+          <a href="comprobante.html?id=${encodeURIComponent(id)}"
+            class="btn btn-sm btn-outline-primary">
+            Ver detalle
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>`;
+    }).join('');
+
+    acPedidos.innerHTML = html;
+
+    // Select de estado
+    acPedidos.querySelectorAll('.js-order-status').forEach((sel) => {
+      sel.addEventListener('change', () => {
+        const id        = sel.dataset.id;
+        const newStatus = sel.value;
+        patchOrderStatus(id, newStatus);
+      });
     });
 
-    card.querySelector(".js-despachar").addEventListener("click", () => marcarEstado(p.id, "Despachado", "Marcado manualmente"));
-    card.querySelector(".js-entregado").addEventListener("click", () => marcarEstado(p.id, "Entregado", "Marcado manualmente"));
-    card.querySelector(".js-simular").addEventListener("click", () => marcarEstado(p.id, "Despachado", "QR escaneado (simulado)"));
-  });
-}
+    // Botones "Marcar Despachado" y "Marcar Entregado"
+    acPedidos.querySelectorAll('.js-mark-dispatched').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        patchOrderStatus(id, 'delivering');
+      });
+    });
 
-function marcarEstado(id, nuevoEstado, motivo) {
-  const p = pedidos.find(x => x.id === id);
-  if (!p) return;
-  p.estado = nuevoEstado;
-  p.historial.push({ ts: ahora(), msg: nuevoEstado + (motivo ? ` — ${motivo}` : "") });
-  render(aplicarFiltros());
-}
+    acPedidos.querySelectorAll('.js-mark-delivered').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        patchOrderStatus(id, 'completed');
+      });
+    });
+  }
 
-function aplicarFiltros() {
-  const est = document.getElementById("filtroEstado").value;
-  const txt = document.getElementById("filtroTexto").value.trim().toLowerCase();
-  return pedidos.filter(p => {
-    const okEst = !est || p.estado === est;
-    const blob = `${p.id} ${p.cliente.nombre} ${p.cliente.telefono}`.toLowerCase();
-    const okTxt = !txt || blob.includes(txt);
-    return okEst && okTxt;
-  });
-}
-document.getElementById("filtroEstado").addEventListener("change", () => render(aplicarFiltros()));
-document.getElementById("filtroTexto").addEventListener("input", () => render(aplicarFiltros()));
 
-document.addEventListener("DOMContentLoaded", () => {
-  render(pedidos);
-});
+    if (filtroEstado) {
+      filtroEstado.addEventListener('change', () => render(applyFilters()));
+    }
+    if (filtroTexto) {
+      filtroTexto.addEventListener('input', () => render(applyFilters()));
+    }
+
+    document.addEventListener('DOMContentLoaded', loadOrders);
+  })();
 </script>
 </body>
 </html>

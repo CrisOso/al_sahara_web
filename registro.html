@@ -18,8 +18,7 @@
         <li class="nav-item"><a class="nav-link px-2" href="mis-pedidos.html">Mis pedidos</a></li>
       </ul>
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <a class="btn btn-sm btn-outline-secondary" href="login.html">Entrar</a>
-        <a class="btn btn-sm btn-outline-primary" href="registro.html">Registrarse</a>
+        <div class="d-flex align-items-center gap-2 flex-wrap" id="navAuthArea"></div>
       </div>
     </div>
   </div>
@@ -49,7 +48,6 @@
   </div>
 </footer>
 
-<!-- Toast container -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
   <div id="toastAdded" class="toast text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true" data-bs-delay="2000">
     <div class="d-flex">
@@ -60,128 +58,75 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="app.js"></script>
+<script src="api-client.js"></script>
+<script src="api-client.js"></script>
+<script src="nav-auth.js"></script>
 <script>
-const LS_USERS = 'as_users';
+  const { alSaharaFetch, setAuthSession } = window.AlSaharaAPI;
 
-function loadUsers(){
-  try {
-    const u = JSON.parse(localStorage.getItem(LS_USERS));
-    return Array.isArray(u) ? u : [];
-  } catch(e){ return []; }
-}
-function saveUsers(users){ localStorage.setItem(LS_USERS, JSON.stringify(users)); }
-function ensureDefaultAdmin(){
-  const users = loadUsers();
-  if(!users.find(u => u.email === 'admin@al-sahara.cl')){
-    users.push({ email:'admin@al-sahara.cl', pass:'admin', nombre:'Admin' });
-    saveUsers(users);
+  function showAlert(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.remove('d-none');
+    el.classList.add('show');
   }
-}
-function showAlert(id, msg){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.textContent = msg;
-  el.classList.remove('d-none');
-  el.classList.add('show');
-}
-function clearAlert(id){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.classList.add('d-none');
-  el.textContent = '';
-}
 
-ensureDefaultAdmin();
+  function clearAlert(id, ) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.add('d-none');
+    el.textContent = '';
+  }
 
-function handleRegistro(event){
-  event.preventDefault();
-  clearAlert('regAlert');
+  async function handleRegistro(event) {
+    event.preventDefault();
+    clearAlert('regAlert');
 
-  const nombre = (document.getElementById('r_nombre')?.value || '').trim();
-  const email  = (document.getElementById('r_email')?.value  || '').trim().toLowerCase();
-  const pass   = (document.getElementById('r_pass')?.value   || '').trim();
-  const pass2  = (document.getElementById('r_pass2')?.value  || '').trim();
+    const nombre = (document.getElementById('r_nombre')?.value || '').trim();
+    const email  = (document.getElementById('r_email')?.value  || '').trim().toLowerCase();
+    const pass   = (document.getElementById('r_pass')?.value   || '').trim();
+    const pass2  = (document.getElementById('r_pass2')?.value  || '').trim();
 
-  if(!email || !pass){ showAlert('regAlert','Completa correo y contraseña.'); return false; }
-  if(pass !== pass2){ showAlert('regAlert','Las contraseñas no coinciden.'); return false; }
+    if (!nombre || !email || !pass || !pass2) {
+      showAlert('regAlert', 'Completa todos los campos.');
+      return false;
+    }
 
-  const users = loadUsers();
-  if(users.some(u => u.email === email)){
-    showAlert('regAlert','Ese correo ya está en uso.');
+    if (pass !== pass2) {
+      showAlert('regAlert', 'Las contraseñas no coinciden.');
+      return false;
+    }
+
+    const btn = document.getElementById('btnRegistro');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Creando cuenta...';
+    }
+
+    try {
+      const data = await alSaharaFetch('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({ name: nombre, email, password: pass }),
+      });
+
+      setAuthSession(data.token, data.user);
+
+      window.location.href = 'index.html';
+    } catch (err) {
+      console.error(err);
+      showAlert('regAlert', err.message || 'Error al crear cuenta.');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Registrarse';
+      }
+    }
+
     return false;
   }
 
-  users.push({ email, pass, nombre });
-  saveUsers(users);
-
-  const okToast = document.getElementById('toastAdded');
-  if(okToast && typeof bootstrap !== 'undefined'){
-    new bootstrap.Toast(okToast).show();
-  } else {
-    alert('Cuenta creada con éxito. Ahora puedes iniciar sesión.');
-  }
-
-  window.location.href = 'login.html';
-  return false;
-}
-</script>
-<script>
-
-function loadUsers(){
-  try { const u = JSON.parse(localStorage.getItem(LS_USERS)); return Array.isArray(u) ? u : []; }
-  catch(e){ return []; }
-}
-function saveUsers(users){ localStorage.setItem(LS_USERS, JSON.stringify(users)); }
-function ensureDefaultAdmin(){
-  const users = loadUsers();
-  if(!users.find(u => u.email === 'admin@al-sahara.cl')){
-    users.push({ email:'admin@al-sahara.cl', pass:'admin', nombre:'Admin' });
-    saveUsers(users);
-  }
-}
-function showAlert(id, msg){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.textContent = msg;
-  el.classList.remove('d-none');
-  el.classList.add('show');
-}
-function clearAlert(id){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.classList.add('d-none');
-  el.textContent = '';
-}
-
-ensureDefaultAdmin();
-
-function handleRegistro(event){
-  event.preventDefault();
-  clearAlert('regAlert');
-
-  const nombre = (document.getElementById('r_nombre')?.value || '').trim();
-  const email  = (document.getElementById('r_email')?.value  || '').trim().toLowerCase();
-  const pass   = (document.getElementById('r_pass')?.value   || '').trim();
-  const pass2  = (document.getElementById('r_pass2')?.value  || '').trim();
-
-  if(!email || !pass){ showAlert('regAlert','Completa correo y contraseña.'); return false; }
-  if(pass !== pass2){ showAlert('regAlert','Las contraseñas no coinciden.'); return false; } // <- alerta por contraseñas distintas
-
-  const users = loadUsers();
-  if(users.some(u => u.email === email)){
-    showAlert('regAlert','Ese correo ya está en uso.');
-    return false;
-  }
-
-  users.push({ email, pass, nombre });
-  saveUsers(users);
-
-  try { new bootstrap.Toast(document.getElementById('toastAdded')).show(); } catch(e){}
-
-  window.location.href = 'login.html';
-  return false;
-}
+  window.handleRegistro = handleRegistro;
 </script>
 
 </body>
