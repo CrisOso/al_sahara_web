@@ -1,0 +1,37 @@
+:root{--as-chrome: #E7DECC;--as-page: #FBFCF8;--bs-body-bg: var(--as-page);} 
+html,body{scroll-behavior:smooth;height: 100%;}
+body { min-height: 100vh; display: flex; flex-direction: column; }
+.section-pad{padding-block:3rem}
+.hero{position:relative;min-height:52vh;display:flex;align-items:center;color:#fff;background:#433a34;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.55))}
+.hero .hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero .hero-content{position:relative}
+.card-elev{transition:transform .2s ease, box-shadow .2s ease}
+.card-elev:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.12)}
+.price{font-weight:700;color:#000}
+.ribbon{position:absolute;top:.75rem;left:.75rem;padding:.25rem .5rem;background:var(--as-chrome);color:#fff;border-radius:.25rem;font-size:.75rem}
+footer a{text-decoration:none}
+.nav-pills .nav-link{border:1px solid rgba(0,0,0,.075)}
+.nav-pills .nav-link.active{background:var(--as-chrome);border-color:transparent}
+.skel-img{height:180px}.skel-line{height:12px}
+.empty-wrap{min-height:40vh}
+nav.bg-light{background-color: var(--as-chrome) !important;}
+nav.bg-light.border-bottom{border-bottom-color: rgba(0,0,0,.08) !important;}
+nav .navbar-brand,nav .nav-link{color: #2b2b2b !important;}
+nav .nav-link:hover,nav .nav-link:focus{color: #000 !important;}
+footer{background-color: var(--as-chrome);margin-top: auto; }
+main{background-color: var(--as-page);flex: 1 0 auto;}
+.card,.modal-content,.list-group-item,.table{background-color: #fff;}
+@media(min-width: 992px) {.position-lg-sticky { position: sticky;}.top-20 { top: 20px; }}
+.badge-tag{font-weight:600;background:#e9ecef;color:#212529;border:1px solid #ced4da;}
+.table-rounded{border:1px solid #212529;border-radius:.5rem;overflow:hidden}
+.table-rounded thead th{background:#f8f9fa;border-bottom:1px solid #212529}
+.table-rounded td, .table-rounded th{border-color:#212529}
+.accordion .accordion-button { position: relative; }
+.accordion .accordion-button.collapsed::before {position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);
+    font-size: .9rem;font-weight: 500;color: #0d6efd;-webkit-text-fill-color: #0d6efd;white-space: nowrap;pointer-events: none;z-index: 3;}
+.accordion .accordion-button::after { z-index: 2; }
+.accordion .accordion-button { padding-top: .6rem; padding-bottom: .6rem; }
+.preferences-card .form-check-input {border-width: 2px;border-color: #343a40;box-shadow: none;}
+.preferences-card .form-check-input:focus {box-shadow: 0 0 0 .15rem rgba(0, 0, 0, 0.25);}
+.preferences-card .form-check-input:checked {border-color: #343a40;}

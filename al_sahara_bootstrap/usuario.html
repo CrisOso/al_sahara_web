@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi cuenta · Al-Sahara</title>
+  <meta name="description" content="Perfil de usuario Al-Sahara">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="bg-light border-bottom">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-between py-2 gap-2">
+      <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al-Sahara</a>
+      <ul class="nav gap-2 flex-wrap mb-0">
+        <li class="nav-item"><a class="nav-link px-2" href="catalogo.html">Catálogo</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="carrito.html">Carrito</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="mis-pedidos.html">Mis pedidos</a></li>
+      </ul>
+      <div id="navAuthArea"></div>
+    </div>
+  </div>
+</nav>
+
+<main class="py-4">
+  <div class="container">
+    <h1 class="h4 mb-3">Mi cuenta</h1>
+    <p class="text-muted small mb-4">Revisa y actualiza tus datos personales.</p>
+
+    <div id="profileAlert"></div>
+
+    <div class="row g-4">
+      <div class="col-12 col-lg-7">
+        <div class="card shadow-sm">
+          <div class="card-header py-2">
+            <strong>Datos personales</strong>
+          </div>
+          <div class="card-body">
+            <form id="profileForm" class="row g-3">
+              <div class="col-12">
+                <label for="profileName" class="form-label">Nombre</label>
+                <input type="text" id="profileName" class="form-control" placeholder="Tu nombre">
+              </div>
+
+              <div class="col-12">
+                <label for="profileEmail" class="form-label">Correo electrónico</label>
+                <input type="email" id="profileEmail" class="form-control" disabled>
+                <div class="form-text">El correo no se puede cambiar desde aquí.</div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label for="profilePhone" class="form-label">Teléfono</label>
+                <input type="tel" id="profilePhone" class="form-control" placeholder="+56 9 1234 5678">
+              </div>
+
+              <div class="col-12 d-flex justify-content-end">
+                <button id="btnGuardarPerfil" type="submit" class="btn btn-primary">
+                  Guardar cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <aside class="col-12 col-lg-5">
+        <div class="card shadow-sm mb-3">
+          <div class="card-header py-2">
+            <strong>Direcciones</strong>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="profileAddressPrimary" class="form-label">Dirección principal</label>
+              <input
+                type="text"
+                id="profileAddressPrimary"
+                class="form-control"
+                placeholder="Dirección principal">
+            </div>
+
+            <div class="mb-3">
+              <label for="profileAddressSecondary" class="form-label">Dirección secundaria</label>
+              <input
+                type="text"
+                id="profileAddressSecondary"
+                class="form-control"
+                placeholder="Dirección secundaria">
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+              <button id="btnClearSecondaryAddress" type="button" class="btn btn-outline-secondary flex-fill">
+                Eliminar dirección secundaria
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+    <div class="row mt-3">
+      <div class="col-12">
+        <div class="card shadow-sm preferences-card">
+          <div class="card-body small d-flex flex-wrap align-items-center gap-3">
+            <button type="button" class="btn btn-sm btn-outline-secondary disabled">
+              Preferencias
+            </button>
+
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="prefPromoEmail">
+              <label class="form-check-label" for="prefPromoEmail">
+                Promociones por Email
+              </label>
+            </div>
+
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="prefOrderSms">
+              <label class="form-check-label" for="prefOrderSms">
+                Estado de pedido por SMS
+              </label>
+            </div>
+
+            <div class="vr d-none d-md-block"></div>
+
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <span>Notificaciones:</span>
+              <div class="form-check form-check-inline mb-0">
+                <input class="form-check-input" type="radio" name="prefNotifications" id="prefNotifSms" value="sms">
+                <label class="form-check-label" for="prefNotifSms">por SMS</label>
+              </div>
+              <div class="form-check form-check-inline mb-0">
+                <input class="form-check-input" type="radio" name="prefNotifications" id="prefNotifEmail" value="email">
+                <label class="form-check-label" for="prefNotifEmail">por Email</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="border-top">
+  <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
+    <a href="contacto.html" class="text-decoration-none">Contacto</a>
+    <span class="small text-muted">© 2025 Al-Sahara</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+<script src="api-client.js"></script>
+<script src="nav-auth.js"></script>
+<script>
+  (function () {
+    document.addEventListener('DOMContentLoaded', () => {
+      const api = window.AlSaharaAPI;
+      if (!api) {
+        console.warn('AlSaharaAPI no está disponible.');
+        return;
+      }
+
+      const { alSaharaFetch, getStoredUser, setAuthSession, getToken } = api;
+
+      const form = document.getElementById('profileForm');
+      const alertWrap = document.getElementById('profileAlert');
+
+      const nameInput = document.getElementById('profileName');
+      const emailInput = document.getElementById('profileEmail');
+      const phoneInput = document.getElementById('profilePhone');
+      const emailSummary = document.getElementById('profileEmailSummary');
+
+      const primaryAddressInput = document.getElementById('profileAddressPrimary');
+      const secondaryAddressInput = document.getElementById('profileAddressSecondary');
+
+      const promoEmailCheckbox = document.getElementById('prefPromoEmail');
+      const orderSmsCheckbox = document.getElementById('prefOrderSms');
+      const notifSmsRadio = document.getElementById('prefNotifSms');
+      const notifEmailRadio = document.getElementById('prefNotifEmail');
+
+      const btnClearSecondary = document.getElementById('btnClearSecondaryAddress');
+      const btnGuardarDirecciones = document.getElementById('btnGuardarDirecciones');
+
+      function showAlert(type, msg) {
+        if (!alertWrap) return;
+        alertWrap.innerHTML = `
+          <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${msg}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+          </div>`;
+      }
+
+      async function loadProfile() {
+        const stored = getStoredUser && getStoredUser();
+
+        if (!stored) {
+          if (form) form.classList.add('d-none');
+          showAlert(
+            'warning',
+            'Debes iniciar sesión para ver tu perfil. <a href="login.html" class="alert-link">Ir a login</a>.'
+          );
+          return;
+        }
+
+        try {
+          const data = await alSaharaFetch('/me', { method: 'GET' });
+
+          if (nameInput) nameInput.value = data.name || '';
+          if (emailInput) emailInput.value = data.email || '';
+          if (phoneInput) phoneInput.value = data.phone || '';
+          if (emailSummary) emailSummary.textContent = data.email || '—';
+
+          // Direcciones (máx 2)
+          if (Array.isArray(data.addresses)) {
+            const primary = data.addresses[0];
+            const secondary = data.addresses[1];
+
+            if (primaryAddressInput) {
+              primaryAddressInput.value = (primary && primary.line1) || '';
+            }
+            if (secondaryAddressInput) {
+              secondaryAddressInput.value = (secondary && secondary.line1) || '';
+            }
+          }
+
+          // Preferencias
+          const prefs = data.preferences || {};
+          if (promoEmailCheckbox) {
+            promoEmailCheckbox.checked = !!prefs.promoEmail;
+          }
+          if (orderSmsCheckbox) {
+            orderSmsCheckbox.checked = !!prefs.orderStatusSms;
+          }
+          if (notifSmsRadio && notifEmailRadio) {
+            if (prefs.notificationsChannel === 'sms') {
+              notifSmsRadio.checked = true;
+            } else if (prefs.notificationsChannel === 'email') {
+              notifEmailRadio.checked = true;
+            }
+          }
+        } catch (err) {
+          console.error('Error cargando perfil', err);
+          showAlert('danger', 'No se pudo cargar tu perfil. Intenta nuevamente más tarde.');
+        }
+      }
+
+      async function saveProfile(ev) {
+        ev && ev.preventDefault && ev.preventDefault();
+
+        try {
+          const addresses = [];
+          if (primaryAddressInput && primaryAddressInput.value.trim()) {
+            addresses.push({
+              label: 'Principal',
+              line1: primaryAddressInput.value.trim(),
+            });
+          }
+          if (secondaryAddressInput && secondaryAddressInput.value.trim()) {
+            addresses.push({
+              label: 'Secundaria',
+              line1: secondaryAddressInput.value.trim(),
+            });
+          }
+
+          const preferences = {
+            promoEmail: promoEmailCheckbox ? !!promoEmailCheckbox.checked : false,
+            orderStatusSms: orderSmsCheckbox ? !!orderSmsCheckbox.checked : false,
+            notificationsChannel:
+              notifSmsRadio && notifSmsRadio.checked
+                ? 'sms'
+                : notifEmailRadio && notifEmailRadio.checked
+                  ? 'email'
+                  : null,
+          };
+
+          const body = {
+            name: nameInput ? nameInput.value.trim() : '',
+            phone: phoneInput ? phoneInput.value.trim() : '',
+            addresses,
+            preferences,
+          };
+
+          const updated = await alSaharaFetch('/me', {
+            method: 'PATCH',
+            body: JSON.stringify(body),
+          });
+
+          const token = getToken && getToken();
+          if (setAuthSession && token) {
+            setAuthSession(token, updated);
+          }
+
+          if (emailSummary) emailSummary.textContent = updated.email || '—';
+
+          showAlert('success', 'Perfil actualizado correctamente.');
+        } catch (err) {
+          console.error('Error guardando perfil', err);
+          showAlert('danger', 'No se pudieron guardar los cambios.');
+        }
+      }
+
+      if (form) {
+        form.addEventListener('submit', saveProfile);
+      }
+      const btnGuardar = document.getElementById('btnGuardarPerfil');
+      if (btnGuardar) {
+        btnGuardar.addEventListener('click', saveProfile);
+      }
+
+      if (btnGuardarDirecciones) {
+        btnGuardarDirecciones.addEventListener('click', saveProfile);
+      }
+
+      if (btnClearSecondary && secondaryAddressInput) {
+        btnClearSecondary.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          secondaryAddressInput.value = '';
+        });
+      }
+
+      loadProfile();
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Usuarios • Al-Sahara</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="bg-light border-bottom">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-between py-2 gap-2">
+      <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al-Sahara</a>
+      <ul class="nav gap-2 flex-wrap mb-0">
+        <li class="nav-item"><a class="nav-link px-2" href="catalogo.html">Catálogo</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="carrito.html">Carrito</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="d-flex align-items-center gap-2 flex-wrap" id="navAuthArea"></div>
+        <a id="navLogout" class="btn btn-sm btn-outline-danger d-none" href="#">Salir</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-3">
+  <h1 class="h3 mb-3">Administración de Usuarios</h1>
+  <nav class="mb-3">
+    <ul class="nav gap-2 flex-wrap">
+      <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="admin.html">Panel</a></li>
+      <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="catalogo-admin.html">Productos</a></li>
+      <li class="nav-item"><a class="btn btn-sm btn-primary" href="usuarios-admin.html">Usuarios</a></li>
+      <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="reportes-admin.html">Reportes</a></li>
+      <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="operaciones-admin.html">Operaciones</a></li>
+      <li class="nav-item"><a class="btn btn-sm btn-outline-secondary" href="anulaciones-admin.html">Anulaciones</a></li>
+    </ul>
+  </nav>
+
+  <div class="card">
+    <div class="p">
+      <table id="tablaUsers" class="table table-sm">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Activo</th>
+            <th>Rol</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer class="border-top">
+  <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
+    <a href="contacto.html" class="text-decoration-none">Contacto</a>
+    <span class="small text-muted">© 2025 Al-Sahara</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="api-client.js"></script>
+<script src="nav-auth.js"></script>
+<script>
+  const { alSaharaFetch, clearAuthSession } = window.AlSaharaAPI;
+
+  function renderUsersTable(items) {
+    const tbody = document.querySelector('#tablaUsers tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    items.forEach((u) => {
+      const tr = document.createElement('tr');
+      tr.dataset.userId = u.id;
+
+      const tdName = document.createElement('td');
+      tdName.textContent = u.name || '';
+      tr.appendChild(tdName);
+
+      const tdEmail = document.createElement('td');
+      tdEmail.textContent = u.email || '';
+      tr.appendChild(tdEmail);
+
+      const tdActive = document.createElement('td');
+      const activeCheck = document.createElement('input');
+      activeCheck.type = 'checkbox';
+      activeCheck.checked = !!u.isActive;
+      tdActive.appendChild(activeCheck);
+      tr.appendChild(tdActive);
+
+      const tdRole = document.createElement('td');
+      const selectRole = document.createElement('select');
+      selectRole.className = 'form-select form-select-sm';
+      ['customer', 'admin'].forEach((role) => {
+        const opt = document.createElement('option');
+        opt.value = role;
+        opt.textContent = role === 'customer' ? 'Cliente' : 'Admin';
+        if (u.role === role) opt.selected = true;
+        selectRole.appendChild(opt);
+      });
+      tdRole.appendChild(selectRole);
+      tr.appendChild(tdRole);
+
+      const tdAction = document.createElement('td');
+
+      // Botón Guardar (PATCH rol / activo)
+      const btnSave = document.createElement('button');
+      btnSave.className = 'btn btn-sm btn-outline-primary me-1';
+      btnSave.textContent = 'Guardar';
+      btnSave.addEventListener('click', async () => {
+        try {
+          await alSaharaFetch('/users/' + encodeURIComponent(u.id), {
+            method: 'PATCH',
+            body: {
+              role: selectRole.value,
+              isActive: activeCheck.checked,
+            },
+          });
+          alert('Usuario actualizado.');
+        } catch (err) {
+          console.error(err);
+          alert(err.message || 'Error al actualizar usuario.');
+        }
+      });
+
+      // Botón Eliminar (DELETE - hard delete)
+      const btnDelete = document.createElement('button');
+      btnDelete.className = 'btn btn-sm btn-outline-danger';
+      btnDelete.textContent = 'Eliminar';
+      btnDelete.addEventListener('click', async () => {
+        if (!confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.')) return;
+        try {
+          await alSaharaFetch('/users/' + encodeURIComponent(u.id), {
+            method: 'DELETE',
+          });
+          tr.remove();
+        } catch (err) {
+          console.error(err);
+          alert(err.message || 'Error al eliminar usuario.');
+        }
+      });
+
+      tdAction.appendChild(btnSave);
+      tdAction.appendChild(btnDelete);
+      tr.appendChild(tdAction);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function cargarUsuarios() {
+    try {
+      const data = await alSaharaFetch('/users?limit=100', { method: 'GET' });
+      renderUsersTable(data.items || []);
+    } catch (err) {
+      console.error(err);
+      if (err.status === 401 || err.status === 403) {
+        clearAuthSession();
+        window.location.href = 'login.html';
+      } else {
+        alert(err.message || 'Error al cargar usuarios.');
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    cargarUsuarios();
+  });
+</script>
+</body>
+</html>

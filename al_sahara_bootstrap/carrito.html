@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrito · Al-Sahara</title>
+  <meta name="description" content="Comida árabe fresca: shawarma, kebab y falafel.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+<nav class="bg-light border-bottom">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-between py-2 gap-2">
+      <a class="navbar-brand fw-semibold text-decoration-none" href="index.html">Al-Sahara</a>
+      <ul class="nav gap-2 flex-wrap mb-0">
+        <li class="nav-item"><a class="nav-link px-2" href="catalogo.html">Catálogo</a></li>
+        <li class="nav-item"><a class="nav-link px-2 active" href="carrito.html">Carrito</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="mis-pedidos.html">Mis pedidos</a></li>
+      </ul>
+      <div id="navAuthArea"></div>
+    </div>
+  </div>
+</nav>
+
+<main class="py-4">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-12 col-lg-8">
+        <h1 class="h4 mb-3">Carrito</h1>
+
+        <div id="emptyCart" class="card shadow-sm mb-3 d-none">
+          <div class="card-body text-center">
+            <p class="mb-2">Tu carrito está vacío.</p>
+            <a href="catalogo.html" class="btn btn-outline-primary btn-sm">Ver catálogo</a>
+          </div>
+        </div>
+
+        <div id="cartItemsContainer"></div>
+      </div>
+
+      <aside class="col-12 col-lg-4">
+        <div class="position-lg-sticky top-20">
+          <div class="card shadow-sm mb-3" id="cartSummary">
+            <div class="card-header py-2"><strong>Totales</strong></div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between"><span>Subtotal</span><span id="subtotalAmount">$0<span></div>
+              <div class="d-flex justify-content-between"><span>Descuento</span><span>$0</span></div>
+              <div class="d-flex justify-content-between"><span>Envío</span><span id="deliveryAmount">$0</span></div>
+              <div class="d-flex justify-content-between"><span>Propina</span><span id="tipAmount">$0</span></div>
+              <hr>
+              <div class="d-flex justify-content-between fw-semibold"><span>Total</span><span id="totalAmount">$0</span></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Notas del pedido (opcional)</label>
+            <textarea id="orderNote" class="form-control" rows="2"
+              placeholder="Ej: Sin cebolla, agregar salsa extra"></textarea>
+          </div>
+          
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Retiro / Delivery</div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="entrega" id="optRetiro" checked>
+                <label class="form-check-label" for="optRetiro">Retiro</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="entrega" id="optDelivery">
+                <label class="form-check-label" for="optDelivery">Delivery</label>
+              </div>
+            </div>
+          </div>
+
+          <div id="addressCard" class="card shadow-sm mb-3 d-none">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Dirección</div>
+              <input id="addressInput" type="text" class="form-control" placeholder="Entrada de dirección" disabled>
+            </div>
+          </div>
+
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Método de pago</div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="pago" id="optTarjeta" checked>
+                <label class="form-check-label" for="optTarjeta">Tarjeta</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="pago" id="optCaja">
+                <label class="form-check-label" for="optCaja">Caja/Entrega</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Cupón</div>
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Entrada de Cupón">
+                <button class="btn btn-outline-primary">Aplicar cupón</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="fw-semibold mb-2">Propina</div>
+              <select id="propinaSelect" class="form-select form-select-sm mb-2">
+                <option value="0">Sin propina</option>
+                <option value="0.05">5%</option>
+                <option value="0.1">10%</option>
+                <option value="0.15">15%</option>
+              </select>
+              <button id="btnConfirmOrder" class="btn btn-primary w-100">Confirmar pedido</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<footer class="border-top">
+  <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
+    <a href="contacto.html" class="text-decoration-none">Contacto</a>
+    <span class="small text-muted">© 2025 Al-Sahara</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+<script src="api-client.js"></script>
+<script src="nav-auth.js"></script>
+<script src="order-utils.js"></script>
+</body>
+</html>
